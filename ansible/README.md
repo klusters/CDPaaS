@@ -18,6 +18,11 @@ ansible-playbook -i inventories/freeipa_lab_anis playbooks/infra/freeipa/site.ym
 ansible-playbook -i inventories/cdp_lab_anis playbooks/infra/cdp/site.yml
 ansible-playbook -i inventories/cdp_lab_anis playbooks/deployment/site.yml
 ```
+# Local Config
+```bash
+ansible-playbook -i inventories/cdp_lab_anis playbooks/tools/local_etc_hosts.yml
+ansible-playbook -i inventories/cdp_lab_anis playbooks/tools/local_trust_ca.yml
+```
 
 # Destroy infra
 ```bash
