@@ -6,7 +6,7 @@ collections:
   #   type: git
   #   version: v3.4.2
 
-  - name: https://github.com/cloudera-labs/cloudera.cluster.git
+  - name: https://github.com/anisf/cloudera.cluster.git
     type: git
     version: devel
 
