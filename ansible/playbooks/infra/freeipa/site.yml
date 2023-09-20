@@ -1,0 +1,17 @@
+---
+
+- name: Init Infra
+  import_playbook: ../common/init_infra.yml
+  tags: init_infra
+
+- name: Configure filesystems
+  import_playbook: ../common/fs.yml
+  tags: fs
+
+- name: Bootstrap
+  import_playbook: ../common/bootstrap.yml
+  tags: bootstrap
+
+- name: Set up FreeIPA
+  import_playbook: freeipa.yml
+  tags: freeipa

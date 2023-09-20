@@ -1,0 +1,10 @@
+ansible==5.10.0
+urllib3<2.0.0
+requests
+cryptography
+paramiko
+jmespath
+netaddr
+jsonmerge
+deepdiff
+google-auth

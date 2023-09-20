@@ -1,0 +1,8 @@
+---
+
+- name: Configure filesystems
+  hosts: all
+
+  roles:
+    - role: klusters.system.filesystems
+      when: dev_mapping_json_query is defined

@@ -1,0 +1,3 @@
+---
+
+cloudera_manager_license_file: "{{ playbook_dir }}/../../../licenses/license.txt"

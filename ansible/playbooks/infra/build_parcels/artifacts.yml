@@ -1,0 +1,8 @@
+---
+
+- name: Preparing Parcel disk
+  hosts: parcels_build
+  become: true
+
+  roles:
+    - role: parcels

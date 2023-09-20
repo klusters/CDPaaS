@@ -1,0 +1,9 @@
+---
+
+- name: Init Infra
+  import_playbook: ../common/init_infra.yml
+  tags: init_infra
+
+- name: Set up OpenVPN
+  import_playbook: openvpn.yml
+  tags: openvpn

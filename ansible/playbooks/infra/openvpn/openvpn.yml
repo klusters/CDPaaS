@@ -1,0 +1,65 @@
+---
+
+- name: Set OpenVPN server
+  hosts: openvpn
+  become: yes
+  gather_facts: yes
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 600
+      when: ansible_os_family == 'Debian'
+
+  tasks:
+    - name: Create openvpn server
+      ansible.builtin.include_role:
+        name: robertdebock.openvpn
+      vars:
+        openvpn_role: "server"
+
+    - name: Copy certificates and keys from the server to the client
+      ansible.builtin.fetch:
+        src: /etc/openvpn/easy-rsa/pki/{{ item }}
+        dest: /tmp/{{ item | basename }}
+        mode: "0640"
+        flat: yes
+      loop:
+        - ca.crt
+        - issued/client.crt
+        - private/client.key
+        - ta.key
+
+- name: Set OpenVPN client
+  hosts: localhost
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Ensure /etc/openvpn/client exist
+      ansible.builtin.file:
+        path: /etc/openvpn/client
+        state: directory
+        mode: "0750"
+        owner: root
+        group: root
+
+    - name: Copy certificates and keys from the server to the client
+      ansible.builtin.copy:
+        src: /tmp/{{ item }}
+        dest: /etc/openvpn/client/{{ item }}
+        mode: "0640"
+      loop:
+        - ca.crt
+        - client.crt
+        - client.key
+        - ta.key
+
+    - name: Create openvpn client
+      ansible.builtin.include_role:
+        name: robertdebock.openvpn
+      vars:
+        openvpn_client_server: "{{ hostvars[groups.openvpn | first ]['ansible_host'] }}"
+        openvpn_role: "client"
+        openvpn_group: nogroup
+        openvpn_configuration_directory: /etc/openvpn

@@ -1,0 +1,14 @@
+- name: Deploy DNS config
+  become: true
+  hosts: deployment, cdp_idm
+  gather_facts: true
+  tasks:
+    - name: Configure DNS
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: |
+          search lab.zlabia.africa
+          {% for server in groups.cdp_idm | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list %}
+          nameserver {{ server }}
+          {% endfor %}
+

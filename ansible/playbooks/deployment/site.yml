@@ -1,0 +1,45 @@
+---
+
+- name: Set up Cloudera init tasks
+  ansible.builtin.import_playbook: always/cloudera_init.yml
+  tags: always
+
+- name: YUM Configuration
+  ansible.builtin.import_playbook: pre_steps/yum.yml
+  tags: yum
+
+- name: OS Configuration
+  ansible.builtin.import_playbook: pre_steps/os.yml
+  tags: os
+
+- name: Set up FreeIPA clients
+  import_playbook: pre_steps/freeipa.yml
+  tags: freeipa
+
+- name: Set up Certificates
+  ansible.builtin.import_playbook: pre_steps/certs.yml
+  tags: tls
+
+- name: Set up Kerberos
+  ansible.builtin.import_playbook: pre_steps/kerberos.yml
+  tags: kerberos
+
+- name: Set up Cloudera Manager Server
+  ansible.builtin.import_playbook: cloudera/server.yml
+  tags: cm_server
+
+- name: Set up Cloudera Manager Agents
+  ansible.builtin.import_playbook: cloudera/agents.yml
+  tags: cm_agents
+
+- name: Set up Cloudera Management Services
+  ansible.builtin.import_playbook: cloudera/mgmt.yml
+  tags: mgmt
+
+- name: Set up AutoTLS
+  ansible.builtin.import_playbook: cloudera/autotls.yml
+  tags: autotls
+
+- name: Deploy CDP Cluster
+  ansible.builtin.import_playbook: cloudera/cluster.yml
+  tags: cluster

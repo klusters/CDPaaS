@@ -1,0 +1,19 @@
+---
+
+clusters:
+- name: "{{ cdp_cluster_name }}"
+  type: base
+  services: "{{ cdp_services }}"
+  databases: "{{ cdp_databases }}"
+  configs: "{{ fresh_install_configs }}"
+  repositories: "{{ cdp_parcels_repositories }}"
+  security: "{{ cdp_security_features }}"
+  host_templates: "{{ vars[cluster_duty_type + '_host_templates'] }}"
+
+mgmt:
+  name: Cloudera Management Service
+  services: [ALERTPUBLISHER, EVENTSERVER, HOSTMONITOR, REPORTSMANAGER, SERVICEMONITOR]
+  databases: "{{ mgmt_databases }}"
+  configs: "{{ mgmt_configs }}"
+  security:
+    tls: "{{ cdp_security_features.tls }}"

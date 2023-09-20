@@ -1,0 +1,8 @@
+---
+
+- name: Setup localhost /etc/hosts based on inventory
+  hosts: localhost
+  gather_facts: no
+  become: yes
+  roles:
+    - klusters.system.etc_hosts

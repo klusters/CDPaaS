@@ -1,0 +1,11 @@
+---
+
+- name: Set up Cloudera Manager Agents
+  hosts: deployment
+  become: true
+  strategy: free
+
+  roles:
+    - cloudera.cluster.cloudera_manager.daemons
+    - cloudera.cluster.cloudera_manager.agent
+    - cloudera.cluster.cloudera_manager.agent_config

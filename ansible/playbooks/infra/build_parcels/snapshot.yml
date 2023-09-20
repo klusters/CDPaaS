@@ -1,0 +1,24 @@
+---
+- name: Create a snapshot from the disk
+  hosts: parcels_build
+
+  tasks:
+    - name: Install python packages
+      become: true
+      ansible.builtin.pip:
+        name: requests, google-auth
+        state: present
+
+    - name: Create a snapshot
+      google.cloud.gcp_compute_snapshot:
+        name: "cdp-parcel-{{ ansible_date_time.epoch }}"
+        source_disk:
+          name: opt-cloudera-parcels
+        zone: "{{ zone }}"
+        labels:
+          parcel_version: "{{ parcel_version | regex_replace('\\.', '-') }}"
+          parcel_hotfix_version: "{{ parcel_hotfix_version }}"
+          parcel_build_version: "{{ parcel_build_version }}"
+        project: "{{ project }}"
+        auth_kind: machineaccount
+        state: present

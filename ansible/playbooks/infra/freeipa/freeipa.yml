@@ -1,0 +1,98 @@
+---
+
+- name: Install FreeIPA server
+  hosts: "{{ groups.cdp_idm | first }}"
+  become: true
+  roles:
+    - role: freeipa.ansible_freeipa.ipaserver
+      state: present
+
+  post_tasks:
+    - name: Ensure zone for reverse DNS lookup is present.
+      freeipa.ansible_freeipa.ipadnszone:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        name_from_ip: "{{ ipa_acl_trusted_network }}"
+        state: present
+
+    - name: Configure Named
+      ansible.builtin.copy:
+        dest: /etc/named/ipa-ext.conf
+        content: |
+          acl "trusted_network" {
+            {{ ipa_acl_trusted_network }};
+          };
+      notify: restart named
+
+    - name: Configure Named
+      ansible.builtin.copy:
+        dest: /etc/named/ipa-options-ext.conf
+        content: |
+          allow-recursion { trusted_network; };
+      notify: restart named
+
+  handlers:
+    - name: restart named
+      service:
+        name: named
+        state: restarted
+  tags:
+    - security
+    - free_ipa
+    - kerberos
+    - tls
+
+- name: Configure DNS on all hosts to use FreeIPA DNS
+  hosts: cdp_idm
+  become: true
+  tasks:
+    - name: Configure DNS
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: |
+          search lab.zlabia.africa
+          {% for server in groups.cdp_idm | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list %}
+          nameserver {{ server }}
+          {% endfor %}
+
+- name: Install FreeIPA replicas
+  hosts: "{{ groups.cdp_idm[1:] }}"
+  become: true
+  roles:
+    - role: freeipa.ansible_freeipa.ipareplica
+      ipaclient_servers: "{{ groups.cdp_idm | first }}"
+      state: present
+  tags:
+    - security
+    - free_ipa
+    - kerberos
+    - tls
+
+- name: Setup FreeIPA clients
+  hosts: cdp_idm
+  become: true
+  roles:
+    - role: freeipa.ansible_freeipa.ipaclient
+      state: present
+      ipaserver_realm: "{{ krb5_realm }}"
+      ipaserver_domain: "{{ krb5_domain | default(krb5_realm | lower) }}"
+      ipaclient_servers: "{{ groups.cdp_idm }}"
+      when: "krb5_kdc_type == 'Red Hat IPA' and 'cdp_idm' in groups"
+  tasks:
+    - name: Set sssd to enumerate users and groups
+      lineinfile:
+        path: /etc/sssd/sssd.conf
+        insertafter: "^\\[domain/.+\\]"
+        regexp: "^enumerate"
+        line: "enumerate = True"
+      when: "krb5_kdc_type == 'Red Hat IPA' and 'cdp_idm' in groups"
+      notify:
+        - restart sssd
+  handlers:
+    - name: restart sssd
+      service:
+        name: sssd
+        state: restarted
+  tags:
+    - security
+    - kerberos
+    - tls

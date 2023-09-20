@@ -1,0 +1,33 @@
+---
+collections:
+
+  # Cloudera collections
+  # - name: https://github.com/cloudera-labs/cloudera.cluster.git
+  #   type: git
+  #   version: v3.4.2
+
+  - name: https://github.com/cloudera-labs/cloudera.cluster.git
+    type: git
+    version: devel
+
+  - community.postgresql
+  - community.crypto
+  - name: community.general
+    version: 7.2.1
+  - freeipa.ansible_freeipa
+  - ansible.posix
+  - google.cloud
+  - name: klusters.system
+    version: 1.2.5
+
+
+roles :
+  - name: cloud-infra
+    src: git+https://github.com/klusters/ansible-role-cloud-infra.git
+    version: 2.1.6
+
+  - name: robertdebock.openvpn
+    src: git+https://github.com/klusters/ansible-role-openvpn.git
+    version: fix/client
+
+  - geerlingguy.postgresql

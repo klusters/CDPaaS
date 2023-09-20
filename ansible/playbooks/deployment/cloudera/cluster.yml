@@ -1,0 +1,9 @@
+---
+
+- name: Set up Clusters
+  hosts: cloudera_manager
+  gather_facts: false
+  become: true
+
+  roles:
+    - cloudera.cluster.deployment.cluster

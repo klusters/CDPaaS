@@ -1,0 +1,8 @@
+---
+
+- name: Postgresql Configuration
+  hosts: db_server
+  become: true
+
+  roles:
+    - role: geerlingguy.postgresql

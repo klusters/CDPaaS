@@ -1,0 +1,25 @@
+---
+
+- name: Install pre-requisite packages for Kerberos
+  hosts: deployment
+  become: true
+
+  roles:
+    - role: cloudera.cluster.prereqs.kerberos
+      when: krb5_kdc_host is defined or 'krb5_server' in groups
+
+  post_tasks:
+    - name: Add "renew_lifetime" in krb5.conf in section "[libdefaults]"
+      community.general.ini_file:
+        path: /etc/krb5.conf
+        section: libdefaults
+        option: "  renew_lifetime"
+        value: 7d
+        state: present
+
+    - name: Remove "default_ccache_name" in krb5.conf in section "[libdefaults]"
+      community.general.ini_file:
+        path: /etc/krb5.conf
+        section: libdefaults
+        option: "  default_ccache_name"
+        state: absent

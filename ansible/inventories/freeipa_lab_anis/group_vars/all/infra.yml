@@ -1,0 +1,62 @@
+---
+
+target_env: lab-anis-ipa
+
+cloud_provider: 'gcp'
+
+terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
+terraform_project_version: '3.0.4'
+
+terraform_env_vars: {}
+
+terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
+terraform_layer: 'instances'
+terraform_workspace: '{{ target_env }}'
+terraform_app_name: freeipa
+terraform_grp_prefix: cdp
+terraform_state_file: '{{ target_env }}-{{ terraform_app_name }}-{{ terraform_layer }}.tfstate'
+template_inventory: 'gce_instances.gcp.yml.j2'
+template_tfvars: 'tfvars.json.j2'
+
+inventory_dest: "{{ playbook_dir }}/../../../inventories/freeipa_lab_anis"
+
+instances_project_region: "europe-north1"
+
+instance_roles:
+  freeipa:
+    disk_size_gb: 150
+    additional_disks:
+    - auto_delete: true
+      boot: false
+      disk_size_gb: 100
+      disk_type: pd-standard
+      disk_name: null
+      device_name: logs
+      mount_path: /var/log
+      disk_labels:
+        purpose: logs
+
+    source_image: "rocky-linux-9-optimized-gcp"
+    source_image_project: "rocky-linux-cloud"
+
+    machine_type: t2d-standard-2
+
+    subnetwork: priv-net
+
+    count: 2
+    preemptible: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: idm
+      purpose: idm
+      instance_role: freeipa
+
+    tags:
+    - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]

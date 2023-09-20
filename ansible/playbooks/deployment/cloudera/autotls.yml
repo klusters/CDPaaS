@@ -1,0 +1,96 @@
+---
+
+- name: Create a passwordless sudoer
+  hosts: deployment
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Create a passwordless sudoer
+      ansible.builtin.user:
+        name: 'autotlstmpuser'
+        shell: /bin/bash
+        password: "{{ 'autotlstmpuser' | password_hash('sha512') }}"
+        state: present
+
+    - name: Add autotlstmpuser to sudoers
+      community.general.sudoers:
+        name: autotlstmpuser
+        state: present
+        user: autotlstmpuser
+        nopassword: true
+        commands: ALL
+
+- name: Set up AutoTLS
+  hosts: cloudera_manager
+  gather_facts: false
+  become: true
+  vars:
+    cloudera_manager_api_user: admin
+
+  # pre_tasks:
+  #   - name: SetUp Cloudera Manager API Client (1/2)
+  #     ansible.builtin.include_role:
+  #       name: cloudera.cluster.cloudera_manager.admin_password.set
+
+  #   - name: SetUp Cloudera Manager API Client (2/2)
+  #     ansible.builtin.include_role:
+  #       name: cloudera.cluster.cloudera_manager.api_client
+
+  tasks:
+    - name: Enable Auto-TLS
+      cloudera.cluster.cm_api:
+        endpoint: "/cm/commands/generateCmca"
+        method: POST
+        body: "{{ lookup('template', '{{ playbook_dir }}/../../../templates/autotls/auto-tls.json.j2') }}"
+        timeout: 360
+
+  post_tasks:
+    - name: Set Cloudera Manager to HTTPS
+      ansible.builtin.set_fact:
+        cloudera_manager_url: "https://{{ groups.cloudera_manager | first }}:{{ cloudera_manager_https_port }}"
+
+    - name: Ensure Cloudera Manager server is restarted
+      ansible.builtin.service:
+        name: cloudera-scm-server
+        state: restarted
+
+    - name: Wait cloudera-scm-server
+      ansible.builtin.wait_for:
+        host: "{{ groups.cloudera_manager | first }}"
+        port: "{{ cloudera_manager_port }}"
+        delay: 5
+        state: started
+        timeout: 300
+
+    - name: Restart Cloudera Management Service
+      cloudera.cluster.cm_api:
+        endpoint: /cm/service/commands/restart
+        method: POST
+
+- name: Delete the autotlstmpuser
+  hosts: deployment
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Force kill autotlstmpuser processes
+      ansible.builtin.command: "pkill -9 -U autotlstmpuser"
+      ignore_errors: true
+      register: ignore_errors_register
+      changed_when: false
+
+    - name: Remove autotlstmpuser
+      ansible.builtin.user:
+        name: 'autotlstmpuser'
+        state: absent
+
+    - name: Remove autotlstmpuser from sudoers
+      community.general.sudoers:
+        name: autotlstmpuser
+        state: absent
+
+    - name: Ensure Cloudera Manager agent is restarted
+      ansible.builtin.service:
+        name: cloudera-scm-agent
+        state: restarted

@@ -1,0 +1,53 @@
+---
+
+- name: Assign variables to hosts
+  hosts: cdp_cluster
+  gather_facts: false
+  tasks:
+    - name: Assign host templates
+      ansible.builtin.set_fact:
+        host_template: "{{ host_role }}-{{ inventory_hostname | regex_replace('.*-(\\d{3})\\..*', '\\1') }}"
+      when: host_role in ['master', 'edge', 'utility']
+
+    - name: Display host templates
+      ansible.builtin.debug:
+        var: host_template
+        verbosity: 1
+
+- name: Init Cloudera-Deploy Run
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Init
+      ansible.builtin.include_role:
+        name: cloudera.deploy
+        tasks_from: init
+
+    - name: Load Static Inventory file if present
+      ansible.builtin.include_role:
+        name: cloudera.deploy
+        tasks_from: refresh_inventory
+      vars:
+        include_inventory_file: "{{ init__dynamic_inventory_artefact }}"
+
+    - name: Distribute Facts to Inventory Hosts
+      ansible.builtin.include_role:
+        name: cloudera.deploy
+        tasks_from: distribute_facts_to_inventory
+
+- name: Check Inventory Connectivity
+  hosts: deployment
+  gather_facts: false
+
+  pre_tasks:
+    - name: Check connectivity to Inventory
+      ansible.builtin.wait_for_connection:
+        timeout: 3
+
+    - name: Gather facts from connected inventory
+      ansible.builtin.setup:
+
+  roles:
+    - cloudera.cluster.deployment.groupby

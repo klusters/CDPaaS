@@ -1,0 +1,22 @@
+---
+
+infra_type: local
+
+update_services: yes
+
+definition_path: "{{ playbook_dir }}/../../../definitions/"
+definition_file: CDPaaS.yml
+
+cdp_parcels_repository_base: "https://archive.cloudera.com/p"
+
+cdp_parcels_repositories:
+  - "{{ cdp_parcels_repository_base }}/cdh7/7.1.9.0/parcels/"
+  # - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/parcels/"
+
+cdp_security_features:
+  kerberos: true
+  tls: false
+  hdfs_encryption: false
+
+cdp_cluster_name: CDPaaS
+cluster_duty_type: heavy_duty

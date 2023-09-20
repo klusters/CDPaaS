@@ -1,0 +1,21 @@
+---
+
+- name: Init Infra
+  import_playbook: ../common/init_infra.yml
+  tags: init_infra
+
+- name: Configure filesystems
+  import_playbook: ../common/fs.yml
+  tags: fs
+
+- name: Artifacts
+  import_playbook: artifacts.yml
+  tags: artifacts
+
+- name: Snapshot
+  import_playbook: snapshot.yml
+  tags: snapshot
+
+- name: Destroy Infra
+  import_playbook: ../common/destroy_infra.yml
+  tags: destroy_infra

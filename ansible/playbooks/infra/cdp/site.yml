@@ -1,0 +1,21 @@
+---
+
+- name: Init Infra
+  import_playbook: ../common/init_infra.yml
+  tags: init_infra
+
+- name: Configure filesystems
+  import_playbook: ../common/fs.yml
+  tags: fs
+
+- name: Bootstrap
+  import_playbook: ../common/bootstrap.yml
+  tags: bootstrap
+
+- name: Secrets
+  import_playbook: secrets.yml
+  tags: secrets
+
+- name: Set up PostgreSQL
+  import_playbook: postgresql.yml
+  tags: postgresql

@@ -1,0 +1,118 @@
+---
+
+- name: Gather facts from FreeIPA servers
+  hosts: cdp_idm
+  gather_facts: false
+
+  pre_tasks:
+    - name: Check connectivity to Inventory
+      ansible.builtin.wait_for_connection:
+        timeout: 3
+
+    - name: Gather facts from connected inventory
+      setup:
+
+- name: Configure DNS on all hosts to use FreeIPA DNS
+  hosts: deployment
+  become: true
+  tasks:
+    - name: Configure DNS
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: |
+          search lab.zlabia.africa
+          {% for server in groups.cdp_idm | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list %}
+          nameserver {{ server }}
+          {% endfor %}
+
+
+- name: Setup FreeIPA clients
+  hosts: deployment
+  become: true
+  pre_tasks:
+    - name: Create /var/log/sssd dir
+      ansible.builtin.file:
+        path: /var/log/sssd
+        state: directory
+        mode: '0755'
+
+  roles:
+    - role: freeipa.ansible_freeipa.ipaclient
+      state: present
+      ipaserver_realm: "{{ krb5_realm }}"
+      ipaserver_domain: "{{ krb5_domain | default(krb5_realm | lower) }}"
+      ipaclient_servers: "{{ groups.cdp_idm }}"
+      when: "krb5_kdc_type == 'Red Hat IPA' and 'cdp_idm' in groups"
+
+  tasks:
+    - name: Set sssd to enumerate users and groups
+      lineinfile:
+        path: /etc/sssd/sssd.conf
+        insertafter: "^\\[domain/.+\\]"
+        regexp: "^enumerate"
+        line: "enumerate = True"
+      when: "krb5_kdc_type == 'Red Hat IPA' and 'cdp_idm' in groups"
+      notify:
+        - restart sssd
+
+  handlers:
+    - name: restart sssd
+      service:
+        name: sssd
+        state: restarted
+  tags:
+    - security
+    - kerberos
+    - tls
+
+- name: FreeIPA post tasks
+  hosts: "{{ groups.cdp_idm | first }}"
+  become: true
+  tags:
+    - security
+    - kerberos
+    - tls
+  tasks:
+    - name: Create Users
+      freeipa.ansible_freeipa.ipauser:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        users: "{{ ipa_users }}"
+        update_password: on_create
+      when: ipa_users is defined
+
+    - name: Create Groups
+      freeipa.ansible_freeipa.ipagroup:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        name: "{{ item.name }}"
+        user: "{{ item.user }}"
+      loop: "{{ ipa_groups }}"
+      when: ipa_groups is defined
+
+    - name: Create Password Policy for Service accounts
+      freeipa.ansible_freeipa.ipapwpolicy:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        name: service_accounts
+        maxlife: 3650 # 10 years
+        priority: 10
+      when:
+        - ipa_groups is defined
+        - '"service_accounts" in ipa_groups | map(attribute="name") | list'
+
+    - name: Ensure zone for reverse DNS lookup is present.
+      freeipa.ansible_freeipa.ipadnszone:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        name_from_ip: "{{ ipa_acl_trusted_network }}"
+        state: present
+      register: reverse_dns_zone
+
+    - debug: var=reverse_dns_zone
+
+    - name: Create PTR records for each host
+      freeipa.ansible_freeipa.ipadnsrecord:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        zone_name: "21.0.10.in-addr.arpa."
+        name: "{{ hostvars[item].ansible_default_ipv4.address.split('.')[-1] }}"
+        record_type: PTR
+        record_value: "{{ hostvars[item]['inventory_hostname'] }}."
+        state: present
+      loop: "{{ groups.deployment }}"

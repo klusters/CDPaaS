@@ -1,0 +1,67 @@
+---
+
+target_env: build-cdp-parcels
+
+cloud_provider: 'gcp'
+
+terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
+terraform_project_version: '3.0.4'
+
+terraform_env_vars: {}
+
+terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
+terraform_layer: 'instances'
+terraform_workspace: '{{ target_env }}'
+terraform_grp_prefix: parcels
+terraform_app_name: parcels
+terraform_state_file: '{{ target_env }}-{{ terraform_app_name }}-{{ terraform_layer }}.tfstate'
+
+template_inventory: 'openvpn_instances.gcp.yml.j2'
+template_tfvars: 'tfvars.json.j2'
+
+inventory_dest: "{{ playbook_dir }}/../../../inventories/build_parcels"
+
+instances_project_region: "europe-north1"
+
+instance_roles:
+  build:
+    disk_size_gb: 150
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 15
+        disk_type: pd-ssd
+        disk_name: opt-cloudera-parcels
+        device_name: opt-cloudera-parcels
+        mount_path: /opt/cloudera/parcels
+        disk_labels:
+          purpose: opt-cloudera-parcels
+
+    source_image: "rocky-linux-8-optimized-gcp"
+    source_image_project: "rocky-linux-cloud"
+
+    machine_type: e2-highcpu-4
+
+    subnetwork: pub-net
+
+    count: 1
+    preemptible: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: build
+      purpose: parcels
+      instance_role: build
+
+    tags:
+      - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-rw", "compute-rw"]
+
+    access_config:
+      - nat_ip:
+        network_tier: PREMIUM

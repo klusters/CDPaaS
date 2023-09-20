@@ -1,0 +1,38 @@
+---
+
+- name: Set up OS
+  hosts: all
+  become: true
+  strategy: free
+  tasks:
+    - name: Set hostnames to lower
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname | lower }}"
+
+    - name: Set hostnames to lower
+      ansible.builtin.copy:
+        dest: /etc/hostname
+        content: "{{ inventory_hostname | lower }}"
+
+    - name: Ensure no Uppercase hostname is present in /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '^{{ ansible_default_ipv4.address }}.*'
+        line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname | lower }}"
+
+    - name: Remove file
+      ansible.builtin.file:
+        path: /etc/dhcp/dhclient.d/google_hostname.sh
+        state: absent
+
+    - name: Disable Google Hostname setup
+      ansible.builtin.copy:
+        dest: /etc/dhcp/dhclient.d/1-google_hostname_off.sh
+        mode: 0755
+        content: |
+          #!/bin/bash
+          # Block hosts changes by google-compute-engine
+          google_hostname_config() {
+              :;
+          }
+          readonly -f google_hostname_config

@@ -1,0 +1,131 @@
+- name: Init Cluster Deployment Tasks
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create local temp directories
+      ansible.builtin.file: "{{ __dir }}"
+      loop:
+        - path: "{{ local_temp_dir }}/csrs"
+          state: directory
+        - path: "{{ local_temp_dir }}/certs"
+          state: directory
+      loop_control:
+        loop_var: __dir
+
+- name: Create local user accounts
+  hosts: deployment
+  become: true
+  gather_facts: false
+  strategy: free
+  roles:
+  - cloudera.cluster.prereqs.user_accounts
+
+- name: Fetch IPA CA cert
+  hosts: "{{ groups.cluster_master_nodes | first }}"
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Fetch CA Certs
+      fetch:
+        src: "/etc/ipa/ca.crt"
+        dest: "{{ playbook_dir }}/ca.crt"
+        flat: yes
+      when:
+        - krb5_kdc_type == 'Red Hat IPA'
+        - not (skip_ipa_signing | default(false))
+
+- name: Build TLS keystores and truststores
+  hosts: deployment
+  become: true
+  gather_facts: true
+  strategy: free
+  pre_tasks:
+    - name: Create AutoTLS directories
+      ansible.builtin.file: "{{ __dir }}"
+      loop:
+        - path: "{{ autotls_base_dir }}/sources/certs"
+          state: directory
+        - path: "{{ autotls_base_dir }}/sources/keys"
+          state: directory
+        - path: "{{ autotls_base_dir }}/sources/common"
+          state: directory
+      loop_control:
+        loop_var: __dir
+
+
+  tasks:
+    - include_role:
+        name: cloudera.cluster.security.tls_generate_csr
+
+    - include_role:
+        name: cloudera.cluster.security.tls_signing
+      when:
+        - krb5_kdc_type == 'Red Hat IPA'
+        - not (skip_ipa_signing | default(false))
+
+    - include_role:
+        name: cloudera.cluster.security.tls_install_certs
+      when:
+        - krb5_kdc_type == 'Red Hat IPA'
+        - not (skip_ipa_signing | default(false))
+
+    - name: Fetch all certificates and keys
+      fetch:
+        src: "{{ __file }}"
+        dest: "{{ local_certs_dir }}/"
+        flat: yes
+      loop:
+        - "{{ tls_cert_path }}"
+        - "{{ tls_key_path_plaintext }}"
+      loop_control:
+        loop_var: __file
+
+  vars:
+    local_certs_dir: "{{ local_temp_dir }}/certs"
+    local_csrs_dir: "{{ local_temp_dir }}/csrs"
+
+
+- name: Copy all certificates and keys from all hosts to cloudera_manager
+  hosts: cloudera_manager
+  gather_facts: false
+  become: true
+  vars:
+    local_certs_dir: "{{ local_temp_dir }}/certs"
+
+  tasks:
+    - name: Copy all certificates and keys from all hosts to cloudera_manager
+      ansible.posix.synchronize:
+        src: "{{ local_certs_dir }}/"
+        dest: "{{ item.dest }}/"
+        mode: push
+        rsync_opts: "{{ item.rsync_opts }}"
+      loop:
+        - dest: "{{ autotls_base_dir }}/sources/certs"
+          rsync_opts:
+            - "--include=*.pem"
+            - "--exclude=*.key.unenc"
+
+        - dest: "{{ autotls_base_dir }}/sources/keys"
+          rsync_opts:
+            - "--include=*.key.unenc"
+            - "--exclude=*.pem"
+
+    - name: Create truststore & keystore password files
+      ansible.builtin.copy:
+        dest: "{{ item.file }}"
+        content: "{{ item.content }}"
+      loop:
+        - file: "{{ autotls_base_dir }}/sources/common/keystore.pwd"
+          content: "{{ tls_keystore_password }}"
+
+        - file: "{{ autotls_base_dir }}/sources/common/truststore.pwd"
+          content: "{{ tls_truststore_password }}"
+
+    - name: Set permissions on AutoTLS directories
+      ansible.builtin.file:
+        path: "{{ autotls_base_dir }}"
+        owner: cloudera-scm
+        group: cloudera-scm
+        state: directory
+        mode: u=rwX,g=,o=
+        recurse: yes

@@ -1,0 +1,18 @@
+---
+
+- name: Deploy yum repositories
+  hosts: deployment
+  become: true
+  tasks:
+    - name: YUM repositories configuration
+      ansible.builtin.yum_repository:
+        name: "{{ item.repo_name }}"
+        description: "{{ item.repo_name }}"
+        baseurl: "{{ item.baseurl }}"
+        gpgcheck: false
+        module_hotfixes: "{{ item.module_hotfixes | d(omit) }}"
+      loop: "{{ yum_repositories }}"
+
+    - name: YUM packages installation
+      ansible.builtin.yum:
+        name: "{{ yum_packages }}"

@@ -1,0 +1,23 @@
+{
+    "location": "{{ autotls_base_dir }}",
+    "customCA": true,
+    "interpretAsFilenames": true,
+    "cmHostCert": "{{ autotls_base_dir }}/sources/certs/{{ hostvars[groups.cloudera_manager | first].ansible_fqdn }}.pem",
+    "cmHostKey": "{{ autotls_base_dir }}/sources/keys/{{ hostvars[groups.cloudera_manager | first].ansible_fqdn }}.key.unenc",
+    "caCert": "{{ tls_chain_path }}",
+    "keystorePasswd": "{{ autotls_base_dir }}/sources/common/keystore.pwd",
+    "truststorePasswd": "{{ autotls_base_dir }}/sources/common/truststore.pwd",
+    "hostCerts": [
+  {% for host in groups['deployment'] %}
+    {
+      "hostname": "{{ hostvars[host].ansible_fqdn }}",
+      "certificate": "{{ autotls_base_dir }}/sources/certs/{{ hostvars[host].ansible_fqdn }}.pem",
+      "key": "{{ autotls_base_dir }}/sources/keys/{{ hostvars[host].ansible_fqdn }}.key.unenc"
+    }{% if not loop.last %},{% endif %}
+  {% endfor %}
+    ],
+    "configureAllServices": "true",
+    "sshPort": 22,
+    "userName": "{{ autotls_sudoer_user }}",
+    "password": "{{ autotls_sudoer_password }}"
+  }

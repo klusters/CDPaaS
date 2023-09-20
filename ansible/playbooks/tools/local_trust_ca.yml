@@ -1,0 +1,37 @@
+---
+
+- name: Fetch IPA CA cert
+  hosts: "{{ groups.cdp_idm | first }}"
+  gather_facts: no
+  tasks:
+    - name: Fetch CA Certs
+      fetch:
+        src: "/etc/ipa/ca.crt"
+        dest: "{{ playbook_dir }}/ca.crt"
+        flat: yes
+
+- name: Trust cluster CA
+  hosts: localhost
+  gather_facts: no
+  become: yes
+
+  tasks:
+  - name: install ca package on rhel systems
+    package:
+      name: ca-certificates
+      state: present
+
+  - name: copy certificate authority to trusted ca path of the os
+    copy:
+      src: "{{ playbook_dir }}/ca.crt"
+      dest: /usr/local/share/ca-certificates/
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+      - update trusted ca
+
+  handlers:
+
+  - name: update trusted ca
+    shell: /usr/sbin/update-ca-certificates
