@@ -1,6 +1,7 @@
 # Set env vars
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=~/Documents/Sync/Confs/GCP/CDP/cdp-training-0946876093de.json
+export BWS_ACCESS_TOKEN=<token>
+export GOOGLE_APPLICATION_CREDENTIALS=<path to service account json>
 export GCLOUD_PROJECT=cdp-training
 workon CDPaaS || mkvirtualenv CDPaaS
 ```
