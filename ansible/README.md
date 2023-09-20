@@ -9,7 +9,7 @@ workon CDPaaS || mkvirtualenv CDPaaS
 ```bash
 cd ansible
 pip install -r python_requirements.txt
-ansible-galaxy install -r ansible_requirements.yml
+ansible-galaxy install -n -r ansible_requirements.yml
 ```
 # Create infra
 ```bash

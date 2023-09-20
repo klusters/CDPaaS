@@ -6,17 +6,9 @@
   gather_facts: false
 
   roles:
-
     - role: cloud-infra
       vars:
         state: present
-
-  post_tasks:
-    - name: Create secrets file
-      ansible.builtin.copy:
-        dest: "{{ ansible_inventory_sources[0] }}/group_vars/all/bw_secrets.yml"
-        mode: '644'
-        content: "{{ bw_secrets | to_nice_yaml }}"
 
 - name: Check SSH availability
   hosts: all
