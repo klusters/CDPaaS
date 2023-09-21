@@ -166,3 +166,5 @@ ansible/inventories/*/*.gcp.yml
 ansible/licenses/license.txt
 
 ansible/inventories/**/bw_secrets.yml
+
+ansible/playbooks/deployment/pre_steps/ca.crt
