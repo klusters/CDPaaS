@@ -10,7 +10,7 @@
       ansible.builtin.user:
         name: 'autotlstmpuser'
         shell: /bin/bash
-        password: "{{ 'autotlstmpuser' | password_hash('sha512') }}"
+        password: "{{ autotls_sudoer_password | password_hash('sha512') }}"
         state: present
 
     - name: Add autotlstmpuser to sudoers
