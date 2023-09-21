@@ -10,7 +10,6 @@ cloudera_manager_database_embedded: no
 cloudera_manager_database_host: "{{ database_host }}"
 cloudera_manager_database_name: cloudera_manager
 cloudera_manager_database_user:     "cloudera_manager-user"
-cloudera_manager_database_password: "{{ cloudera_manager_database_password }}"
 cloudera_manager_database_port: "{{ database_port }}"
 
 cdp_databases:
