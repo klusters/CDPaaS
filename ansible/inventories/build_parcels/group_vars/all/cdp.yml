@@ -1,24 +1,5 @@
 ---
 
-# cdp_parcels_repository_base: "https://archive.cloudera.com/p"
-
-# cdp_parcels_repositories:
-#   - "{{ cdp_parcels_repository_base }}/cdh7/7.1.7.2032/parcels/"
-#   - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/parcels/"
-
-# cloudera_manager_csds:
-#   - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/csd/LIVY_FOR_SPARK3-0.6.3000.3.2.7172000.10-1.jar"
-#   - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/csd/SPARK3_ON_YARN-3.2.3.3.2.7172000.10-1.jar"
-
-# cloudera_manager_version: 7.10.1
-# cloudera_manager_repo_url: "{{ cdp_parcels_repository_base }}/cm7/{{ cloudera_manager_version }}/redhat{{ ansible_distribution_major_version }}/yum"
-
-# cloudera_manager_license_file: "{{ playbook_dir }}/../../../licenses/skeap_cdp-pvc-data_services_license.txt"
-
-# yum_repositories:
-#   - repo_name: Cloudera-Manager-{{ cloudera_manager_version }}
-#     baseurl: "https://0563a4dc-1a98-4179-be4a-619469305784:7d4b1477b609@archive.cloudera.com/p/cm7/{{ cloudera_manager_version }}/redhat{{ ansible_distribution_major_version }}/yum"
-
 parcel_version: 7.1.9
 parcel_hotfix_version: 0
 parcel_build_version: 44702451
