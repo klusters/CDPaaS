@@ -28,7 +28,7 @@ roles :
 
   - name: cloudera.deploy
     src: git+https://github.com/anisf/cloudera-deploy.git
-    version: main
+    version: role
 
   - name: build_parcels
     src: git+https://github.com/klusters/ansible-role-build_parcels.git
@@ -36,6 +36,6 @@ roles :
 
   - name: robertdebock.openvpn
     src: git+https://github.com/klusters/ansible-role-openvpn.git
-    version: fix/client
+    version: 1.0.0
 
   - geerlingguy.postgresql

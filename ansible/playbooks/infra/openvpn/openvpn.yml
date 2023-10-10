@@ -1,12 +1,20 @@
 ---
 
+- name: Get localhost username
+  hosts: localhost
+  connection: local
+
 - name: Set OpenVPN server
   hosts: openvpn
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
   pre_tasks:
+    - name: Get actual localhost username
+      ansible.builtin.set_fact:
+        vpn_user: "{{ hostvars['localhost']['ansible_user_id'] }}"
+
     - name: Update apt cache
-      apt:
+      ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
@@ -23,17 +31,22 @@
         src: /etc/openvpn/easy-rsa/pki/{{ item }}
         dest: /tmp/{{ item | basename }}
         mode: "0640"
-        flat: yes
+        flat: true
       loop:
         - ca.crt
-        - issued/client.crt
-        - private/client.key
+        - "issued/{{ vpn_user }}.crt"
+        - "private/{{ vpn_user }}.key"
         - ta.key
 
 - name: Set OpenVPN client
   hosts: localhost
-  become: yes
-  gather_facts: yes
+  connection: local
+  become: true
+  pre_tasks:
+    - name: Get actual localhost username
+      ansible.builtin.set_fact:
+        vpn_user: "{{ hostvars['localhost']['ansible_user_id'] }}"
+      become: false
 
   tasks:
     - name: Ensure /etc/openvpn/client exist
@@ -51,15 +64,15 @@
         mode: "0640"
       loop:
         - ca.crt
-        - client.crt
-        - client.key
+        - "{{ vpn_user }}.crt"
+        - "{{ vpn_user }}.key"
         - ta.key
 
     - name: Create openvpn client
       ansible.builtin.include_role:
         name: robertdebock.openvpn
       vars:
-        openvpn_client_server: "{{ hostvars[groups.openvpn | first ]['ansible_host'] }}"
+        openvpn_client_server: "{{ hostvars[groups.openvpn | first]['ansible_host'] }}"
         openvpn_role: "client"
         openvpn_group: nogroup
         openvpn_configuration_directory: /etc/openvpn
