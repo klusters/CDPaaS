@@ -1,6 +1,5 @@
 # Set env vars
 ```bash
-export BWS_ACCESS_TOKEN=<token>
 export GOOGLE_APPLICATION_CREDENTIALS=<path to service account json>
 export GCLOUD_PROJECT=cdp-training
 workon CDPaaS || mkvirtualenv CDPaaS
@@ -10,6 +9,11 @@ workon CDPaaS || mkvirtualenv CDPaaS
 cd ansible
 pip install -r python_requirements.txt
 ansible-galaxy install -n -r ansible_requirements.yml
+```
+# Create secrets file
+```bash
+gcloud secrets versions access latest --secret=bw_secrets --out-file inventories/freeipa_lab_anis/group_vars/all/secrets.yml
+cp inventories/freeipa_lab_anis/group_vars/all/secrets.yml inventories/cdp_lab_anis/group_vars/all/secrets.yml
 ```
 # Create infra
 ```bash

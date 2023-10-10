@@ -29,3 +29,5 @@ cdp_parcels_file: "{{ cdp_parcels_repo_base }}/cdh7/{{ parcel_version }}.{{ parc
 
 artifacts_delivery_dir: "/opt/cloudera/parcels/"
 artifacts_download_dir: "/tmp"
+repo_download_username: "{{ cloudera_manager_repo_username }}"
+repo_download_password: "{{ cloudera_manager_repo_password }}"
