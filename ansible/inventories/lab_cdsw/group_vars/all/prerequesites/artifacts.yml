@@ -1,0 +1,30 @@
+---
+
+common_prerequesites_packages_rpm: []
+
+common_prerequesites_packages_pip: []
+
+prerequesites_packages_rpm: "{{ common_prerequesites_packages_rpm }}"
+prerequesites_packages_pip: "{{ common_prerequesites_packages_pip }}"
+
+chrony_config_server: "{{ groups['ntp_servers'] }}"
+
+# local_rpm_repo_base: "http://{{ hostvars[groups.custom_repo[0]].ansible_host }}/aux/RPMs"
+# local_pypi_repo:     "http://{{ hostvars[groups.custom_repo[0]].ansible_host }}/aux/pypi"
+# local_jar_repo:      "http://{{ hostvars[groups.custom_repo[0]].ansible_host }}/aux/JARs"
+
+# prerequesites_packages_pip_repository: "{{ local_pypi_repo }}"
+
+mysql_jdbc_connector_url: "{{ local_jar_repo }}/mysql-jdbc-connector/mysql-connector-java-5.1.49.jar"
+
+default_pip_executable: pip3
+vault_pip_executable: "{{ default_pip_executable }}"
+prerequesites_packages_pip_executable: "{{ default_pip_executable }}"
+
+yum_repositories:
+  - repo_name: Cloudera-Manager-{{ cloudera_manager_version }}
+    baseurl: "https://{{ cloudera_manager_repo_username }}:{{ cloudera_manager_repo_password }}@archive.cloudera.com/p/cm7/{% if cloudera_manager_version_chf is defined %}patch/{% endif %}{{ cloudera_manager_version }}{{ cloudera_manager_version_chf | d('') }}/redhat{{ ansible_distribution_major_version }}/yum"
+
+common_yum_packages: ['java-11-openjdk-devel', 'rsync', 'python-psycopg2']
+
+yum_packages: "{{ common_yum_packages }}"

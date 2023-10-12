@@ -1,0 +1,162 @@
+---
+
+heavy_duty_host_templates:
+  edge-001:
+    HDFS:
+      - BALANCER
+      - GATEWAY
+      - HTTPFS
+    HIVE:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+    HUE:
+      - HUE_SERVER
+      - KT_RENEWER
+    INFRA_SOLR:
+      - GATEWAY
+      - SOLR_SERVER
+
+    KNOX:
+      - KNOX_GATEWAY
+    # LIVY_FOR_SPARK3:
+    #   - LIVY_SERVER_FOR_SPARK3
+    RANGER:
+      - RANGER_ADMIN
+    SPARK_ON_YARN:
+      - GATEWAY
+    # SPARK3_ON_YARN:
+    #   - GATEWAY
+    #   - SPARK3_YARN_HISTORY_SERVER
+    OOZIE:
+      - OOZIE_SERVER
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - JOBHISTORY
+    ZOOKEEPER:
+      - SERVER
+  edge-002:
+    HDFS:
+      - GATEWAY
+      - JOURNALNODE
+      - HTTPFS
+    HIVE:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+    HUE:
+      - HUE_SERVER
+      - KT_RENEWER
+    INFRA_SOLR:
+      - GATEWAY
+      - SOLR_SERVER
+
+    KNOX:
+      - KNOX_GATEWAY
+    QUEUEMANAGER:
+      - QUEUEMANAGER_STORE
+      - QUEUEMANAGER_WEBAPP
+    RANGER:
+      - RANGER_ADMIN
+      - RANGER_TAGSYNC
+      - RANGER_USERSYNC
+    SPARK_ON_YARN:
+      - GATEWAY
+      - SPARK_YARN_HISTORY_SERVER
+    # SPARK3_ON_YARN:
+    #   - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+
+
+  master-001:
+    HDFS:
+      - GATEWAY
+      - JOURNALNODE
+      - FAILOVERCONTROLLER
+      - NAMENODE
+    HIVE:
+      - GATEWAY
+      - HIVEMETASTORE
+    HIVE_ON_TEZ:
+      - GATEWAY
+      - HIVESERVER2
+    INFRA_SOLR:
+      - GATEWAY
+
+    SPARK_ON_YARN:
+      - GATEWAY
+    # SPARK3_ON_YARN:
+    #   - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - RESOURCEMANAGER
+    ZOOKEEPER:
+      - SERVER
+
+
+  master-002:
+    HDFS:
+      - GATEWAY
+      - JOURNALNODE
+      - FAILOVERCONTROLLER
+      - NAMENODE
+    HIVE:
+      - GATEWAY
+      - HIVEMETASTORE
+    HIVE_ON_TEZ:
+      - GATEWAY
+      - HIVESERVER2
+
+    INFRA_SOLR:
+      - GATEWAY
+
+    SPARK_ON_YARN:
+      - GATEWAY
+    # SPARK3_ON_YARN:
+    #   - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - RESOURCEMANAGER
+    ZOOKEEPER:
+      - SERVER
+
+
+  workers:
+    HDFS:
+      - GATEWAY
+      - DATANODE
+    HIVE:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+
+    INFRA_SOLR:
+      - GATEWAY
+
+    SPARK_ON_YARN:
+      - GATEWAY
+    # SPARK3_ON_YARN:
+    #   - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - NODEMANAGER
+
+
+  utility-001:
+    HDFS:
+      - GATEWAY
+
+  cdsw:
+    HDFS:
+      - GATEWAY

@@ -1,0 +1,360 @@
+---
+
+target_env: lab-cdsw
+
+cloud_provider: 'gcp'
+
+terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
+terraform_project_version: 'cdpaas_init'
+
+terraform_env_vars: {}
+
+terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
+terraform_layer: 'instances'
+terraform_workspace: '{{ target_env }}'
+terraform_grp_prefix: cdp
+terraform_app_name: cdp
+terraform_state_file: '{{ target_env }}-{{ terraform_app_name }}-{{ terraform_layer }}.tfstate'
+
+template_inventory: 'cluster_gce_instances.gcp.yml.j2'
+template_tfvars: 'tfvars.json.j2'
+
+inventory_dest: "{{ ansible_inventory_sources[0] }}"
+
+instances_project_region: "europe-north1"
+
+instance_roles:
+  utilities:
+    disk_size_gb: 150
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-01
+        mount_path: /data/01
+        disk_labels:
+          purpose: data-01
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-02
+        mount_path: /data/02
+        disk_labels:
+          purpose: data-02
+
+    source_image: "centos-7"
+    source_image_project: "centos-cloud"
+
+    machine_type: n2d-standard-8
+
+    subnetwork: priv-net
+
+    count: 1
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: utility
+      purpose: cluster
+      instance_role: utilities
+
+    tags:
+      - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
+
+  masters:
+    disk_size_gb: 150
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-01
+        mount_path: /data/01
+        disk_labels:
+          purpose: data-01
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-02
+        mount_path: /data/02
+        disk_labels:
+          purpose: data-02
+
+    source_image: "centos-7"
+    source_image_project: "centos-cloud"
+
+    machine_type: n2d-standard-4
+
+    subnetwork: priv-net
+
+    count: 2
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: master
+      purpose: cluster
+      instance_role: masters
+
+    tags:
+    - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
+
+  edges:
+    disk_size_gb: 150
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-01
+        mount_path: /data/01
+        disk_labels:
+          purpose: data-01
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-02
+        mount_path: /data/02
+        disk_labels:
+          purpose: data-02
+
+    source_image: "centos-7"
+    source_image_project: "centos-cloud"
+
+    machine_type: n2d-standard-4
+
+    subnetwork: priv-net
+
+    count: 2
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: edge
+      purpose: cluster
+      instance_role: edges
+
+    tags:
+    - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
+
+  workers:
+    disk_size_gb: 150
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-01
+        mount_path: /data/01
+        disk_labels:
+          purpose: data-01
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-02
+        mount_path: /data/02
+        disk_labels:
+          purpose: data-02
+
+    source_image: "centos-7"
+    source_image_project: "centos-cloud"
+
+    machine_type: n2d-standard-4
+
+    subnetwork: priv-net
+
+    count: 3
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: worker
+      purpose: cluster
+      instance_role: workers
+
+    tags:
+    - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
+
+  cdsw:
+    disk_size_gb: 150
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 1500
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data
+        mount_path: /data
+        disk_labels:
+          purpose: data
+
+    source_image: "centos-7"
+    source_image_project: "centos-cloud"
+
+    machine_type: n2d-standard-32
+
+    subnetwork: priv-net
+
+    count: 3
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: cdsw
+      purpose: cluster
+      instance_role: cdsw
+
+    tags:
+    - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
