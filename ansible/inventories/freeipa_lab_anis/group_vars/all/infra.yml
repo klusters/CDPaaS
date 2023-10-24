@@ -18,7 +18,7 @@ terraform_state_file: '{{ target_env }}-{{ terraform_app_name }}-{{ terraform_la
 template_inventory: 'gce_instances.gcp.yml.j2'
 template_tfvars: 'tfvars.json.j2'
 
-inventory_dest: "{{ playbook_dir }}/../../../inventories/freeipa_lab_anis"
+inventory_dest: "{{ ansible_inventory_sources[0] }}"
 
 instances_project_region: "europe-north1"
 

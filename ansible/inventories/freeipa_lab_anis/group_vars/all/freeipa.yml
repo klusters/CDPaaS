@@ -9,8 +9,10 @@ ipaserver_domain: "{{ krb5_domain | default(krb5_realm | lower) }}"
 
 krb5_kdc_admin_user: "admin@{{ krb5_realm }}"
 krb5_kdc_admin_password: "{{ ipaadmin_password }}"
+krb5_kdc_host: "{{ groups.cdp_idm | first }}"
 
-ipaclient_force_join: false
+ipaclient_force_join: true
+ipaclient_allow_repair: true
 
 ipaserver_setup_dns: true
 ipareplica_setup_dns: true

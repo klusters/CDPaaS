@@ -30,7 +30,7 @@ instance_roles:
     source_image: "ubuntu-minimal-2004-lts"
     source_image_project: "ubuntu-os-cloud"
 
-    machine_type: e2-highcpu-2
+    machine_type: n1-standard-1
 
     subnetwork: pub-net
 

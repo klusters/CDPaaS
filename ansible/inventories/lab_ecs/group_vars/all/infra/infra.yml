@@ -1,6 +1,6 @@
 ---
 
-target_env: lab-anis-cdp
+target_env: lab-ecs
 
 cloud_provider: 'gcp'
 
@@ -46,17 +46,6 @@ instance_roles:
         mount_path: /opt/cloudera
         disk_labels:
           purpose: opt-cloudera
-
-      - auto_delete: true
-        boot: false
-        disk_size_gb: 15
-        disk_type: pd-standard
-        disk_name: null
-        source_snapshot: "projects/cdp-training/global/snapshots/cdp-parcel-1695142742"
-        device_name: opt-cloudera-parcel-CDP-7-1-9
-        mount_path: /opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p0.44702451
-        disk_labels:
-          purpose: cdp-7-1-7-sp2
 
       - auto_delete: true
         boot: false
@@ -129,17 +118,6 @@ instance_roles:
 
       - auto_delete: true
         boot: false
-        disk_size_gb: 15
-        disk_type: pd-standard
-        disk_name: null
-        source_snapshot: "projects/cdp-training/global/snapshots/cdp-parcel-1695142742"
-        device_name: opt-cloudera-parcel-CDP-7-1-9
-        mount_path: /opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p0.44702451
-        disk_labels:
-          purpose: cdp-7-1-7-sp2
-
-      - auto_delete: true
-        boot: false
         disk_size_gb: 100
         disk_type: pd-standard
         disk_name: null
@@ -206,17 +184,6 @@ instance_roles:
         mount_path: /opt/cloudera
         disk_labels:
           purpose: opt-cloudera
-
-      - auto_delete: true
-        boot: false
-        disk_size_gb: 15
-        disk_type: pd-standard
-        disk_name: null
-        source_snapshot: "projects/cdp-training/global/snapshots/cdp-parcel-1695142742"
-        device_name: opt-cloudera-parcel-CDP-7-1-9
-        mount_path: /opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p0.44702451
-        disk_labels:
-          purpose: cdp-7-1-7-sp2
 
       - auto_delete: true
         boot: false
@@ -289,17 +256,6 @@ instance_roles:
 
       - auto_delete: true
         boot: false
-        disk_size_gb: 15
-        disk_type: pd-standard
-        disk_name: null
-        source_snapshot: "projects/cdp-training/global/snapshots/cdp-parcel-1695142742"
-        device_name: opt-cloudera-parcel-CDP-7-1-9
-        mount_path: /opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p0.44702451
-        disk_labels:
-          purpose: cdp-7-1-9
-
-      - auto_delete: true
-        boot: false
         disk_size_gb: 100
         disk_type: pd-standard
         disk_name: null
@@ -336,6 +292,65 @@ instance_roles:
       role: worker
       purpose: cluster
       instance_role: workers
+
+    tags:
+    - ssh
+
+    service_account:
+      email: "1095120801558-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
+
+  ecs:
+    disk_size_gb: 150
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 100
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 1500
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data
+        mount_path: /data
+        disk_labels:
+          purpose: data
+
+    source_image: "rhel-8"
+    source_image_project: "rhel-cloud"
+
+    machine_type: n2d-standard-32
+
+    subnetwork: priv-net
+
+    count: 3
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: ecs
+      purpose: cluster
+      instance_role: ecs
 
     tags:
     - ssh

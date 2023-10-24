@@ -1,0 +1,272 @@
+---
+
+tls: false
+manual_tls_cert_distribution: false
+
+# tls_truststore_password: "{{ tls_truststore_password }}"
+# tls_keystore_password: "{{ tls_keystore_password }}"
+# tls_key_password: "{{ tls_key_password }}"
+local_temp_dir: '/tmp'
+
+base_dir_security: /opt/cloudera/security
+base_dir_security_pki: "{{ base_dir_security }}/pki"
+
+tls_cert_path: "{{ base_dir_security_pki }}/{{ inventory_hostname }}.pem"
+tls_key_path: "{{ base_dir_security_pki }}/{{ inventory_hostname }}.key"
+tls_key_path_plaintext: "{{ tls_key_path }}.unenc"
+tls_chain_path: "{{ autotls_base_dir }}/sources/common/merged_cacerts.pem"
+
+autotls_base_dir: /opt/cloudera/AutoTLS
+autotls_sudoer_user: autotlstmpuser
+
+tls_ca_certs:
+  - alias: ipa_root_ca
+    path: "{{ playbook_dir }}/ca.crt"
+
+local_accounts:
+  - user: accumulo
+    home: /var/lib/accumulo
+    comment: Accumulo
+
+  - user: atlas
+    home: /var/lib/atlas
+    comment: Atlas
+    extra_groups: [hadoop]
+
+  - user: cloudera-scm
+    home: /var/lib/cloudera-scm-server
+    comment: Cloudera Manager
+    mode: '770'
+    keystore_acl: false
+    key_acl: false
+    key_password_acl: false
+
+  - user: cruisecontrol
+    home: /var/lib/cruise_control
+    comment: Cruise Control
+    keystore_acl: false
+
+  - user: druid
+    home: /var/lib/druid
+    comment: Druid
+    extra_groups: [hadoop]
+
+  - user: flink
+    home: /var/lib/flink
+    comment: Flink
+    keystore_acl: false
+
+  - user: ssb
+    home: /var/lib/ssb
+    comment: SQL Stream Builder
+    keystore_acl: false
+    key_acl: false
+    key_password_acl: false
+
+  - user: flume
+    home: /var/lib/flume-ng
+    comment: Flume
+    keystore_acl: false
+
+  - user: hbase
+    home: /var/lib/hbase
+    comment: HBase
+    keystore_acl: false
+
+  - user: hdfs
+    home: /var/lib/hadoop-hdfs
+    comment: Hadoop HDFS
+    extra_groups: [hadoop]
+
+  - user: hive
+    home: /var/lib/hive
+    comment: Hive
+    keystore_acl: false
+
+  - user: httpfs
+    home: /var/lib/hadoop-httpfs
+    comment: Hadoop HTTPFS
+    keystore_acl: false
+
+  - user: hue
+    home: /usr/lib/hue
+    comment: Hue
+    key_acl: false
+    key_password_acl: false
+
+  - user: impala
+    home: /var/lib/impala
+    comment: Impala
+    extra_groups: [hive]
+    key_acl: false
+    key_password_acl: false
+
+  - user: kafka
+    home: /var/lib/kafka
+    comment: Kafka
+    keystore_acl: false
+
+  - user: keytrustee
+    home: /var/lib/keytrustee
+    comment: KeyTrustee KMS
+    keystore_acl: false
+    key_acl: false
+    key_password_acl: false
+
+  - user: kms
+    home: /var/lib/hadoop-kms
+    comment: Hadoop KMS
+    keystore_acl: false
+
+  - user: knox
+    home: /var/lib/knox
+    comment: Knox
+    extra_groups: [hadoop]
+    keystore_acl: false
+
+  - user: kudu
+    home: /var/lib/kudu
+    comment: Kudu
+    key_acl: false
+    key_password_acl: false
+
+  - user: livy
+    home: /var/lib/livy
+    comment: Livy
+    keystore_acl: false
+
+  - user: mapred
+    home: /var/lib/hadoop-mapreduce
+    comment: Hadoop MapReduce
+    extra_groups: [hadoop]
+
+  - user: nifi
+    home: /var/lib/nifi
+    command: NiFi
+    keystore_acl: false
+
+  - user: nifiregistry
+    home: /var/lib/nifiregistry
+    command: NiFi Registry
+    keystore_acl: false
+
+  - user: nifi
+    home: /var/lib/nifi
+    command: NiFi
+
+  - user: nifiregistry
+    home: /var/lib/nifiregistry
+    command: NiFi Registry
+
+  - user: oozie
+    home: /var/lib/oozie
+    comment: Oozie User
+    keystore_acl: false
+
+  - user: phoenix
+    home: /var/lib/phoenix
+    comment: Phoenix User
+
+  - user: ranger
+    home: /var/lib/ranger
+    comment: Ranger
+    extra_groups: [hadoop]
+
+  - user: rangerraz
+    home: /var/lib/rangerraz
+    comment: Ranger Raz User
+    extra_groups: [ranger, hadoop]
+
+  - user: rangertagsync
+    home: /var/lib/rangertagsync
+    comment: Ranger Tagsync User
+    extra_groups: [ranger, hadoop]
+
+  - user: schemaregistry
+    home: /var/lib/schemaregistry
+    comment: Schema Registry
+    keystore_acl: false
+
+  - user: sentry
+    home: /var/lib/sentry
+    comment: Sentry
+
+  - user: solr
+    home: /var/lib/solr
+    comment: Solr
+    keystore_acl: false
+
+  - user: spark
+    home: /var/lib/spark
+    comment: Spark
+    keystore_acl: false
+
+  - user: spark2
+    home: /var/lib/spark2
+    comment: Spark2
+
+  - user: sqoop
+    home: /var/lib/sqoop
+    comment: Sqoop
+
+  - user: sqoop2
+    home: /var/lib/sqoop2
+    comment: Sqoop2
+    extra_groups: [sqoop]
+
+  - user: streamsmsgmgr
+    home: /var/lib/streams_messaging_manager
+    comment: Streams Messaging Manager
+    keystore_acl: false
+    key_acl: false
+
+  - user: streamsrepmgr
+    home: /var/lib/streams_replication_manager
+    comment: Streams Replication Manager
+    keystore_acl: false
+
+  - user: superset
+    home: /var/lib/superset
+    comment: Superset
+
+  - user: yarn
+    home: /var/lib/hadoop-yarn
+    comment: Hadoop Yarn
+    extra_groups: [hadoop, spark]
+
+  - user: zeppelin
+    home: /var/lib/zeppelin
+    comment: Zeppelin
+    keystore_acl: false
+
+  - user: zookeeper
+    home: /var/lib/zookeeper
+    comment: ZooKeeper
+    keystore_acl: false
+
+postgres_accounts:
+  - user: postgres
+    home: /var/lib/pgsql
+    uid: 26
+    comment: PostgreSQL Server
+    mode: '770'
+    shell: /bin/bash
+    unencrypted_key_acl: "{{ database_tls }}"
+
+mariadb_accounts:
+  - user: mysql
+    home: /var/lib/mysql
+    uid: 27
+    comment: MariaDB Server
+    mode: '770'
+    shell: /bin/bash
+    unencrypted_key_acl: "{{ database_tls }}"
+
+ecs_accounts:
+  - user: cloudera-scm
+    home: /var/lib/cloudera-scm-server
+    comment: Cloudera Manager
+    mode: '770'
+    keystore_acl: false
+    key_acl: false
+    key_password_acl: false
