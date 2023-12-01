@@ -1,0 +1,30 @@
+---
+
+target_env: lab-ses-net
+
+cloud_provider: 'gcp'
+
+terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
+terraform_project_version: 'multilayer'
+
+terraform_env_vars: {}
+
+terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
+terraform_layer: 'network'
+
+skip_ssh: true
+cloud_infra_prepare_inventory: false
+
+network_project_id: "{{ lookup('env','GCLOUD_PROJECT') }}"
+network_name: cdp-training-ses
+network_region: "europe-north1"
+network_subnetworks:
+  - subnet_name: pub-net
+    subnet_ip: 10.0.20.0/24
+    subnet_region: europe-north1
+    subnet_private_access: true
+
+  - subnet_name: priv-net
+    subnet_ip: 10.0.21.0/24
+    subnet_region: europe-north1
+    subnet_private_access: true

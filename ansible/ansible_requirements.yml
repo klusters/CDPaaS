@@ -22,9 +22,9 @@ collections:
 
 
 roles :
-  - name: cloud-infra
-    src: git+https://github.com/klusters/ansible-role-cloud-infra.git
-    version: 2.1.6
+  - name: cloud_infra
+    src: git+https://github.com/klusters/ansible-role-cloud_infra.git
+    version: 3.0.0
 
   - name: cloudera.deploy
     src: git+https://github.com/anisf/cloudera-deploy.git

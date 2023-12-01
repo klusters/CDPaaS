@@ -10,7 +10,7 @@ definition_file: CDPaaS.yml
 cdp_parcels_repository_base: "https://archive.cloudera.com/p"
 
 cdp_parcels_repositories:
-  - "{{ cdp_parcels_repository_base }}/cdh7/7.1.7.2032/parcels/"
+  - "{{ cdp_parcels_repository_base }}/cdh7/7.1.9.2/parcels/"
   # - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/parcels/"
 
 cdp_security_features:

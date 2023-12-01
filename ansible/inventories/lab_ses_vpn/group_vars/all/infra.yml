@@ -1,26 +1,24 @@
 ---
 
-target_env: lab-anis-vpn
+target_env: lab-ses-vpn
 
 cloud_provider: 'gcp'
 
 terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
-terraform_project_version: '3.0.4'
+terraform_project_version: 'multilayer'
 
 terraform_env_vars: {}
 
 terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
 terraform_layer: 'instances'
-terraform_workspace: '{{ target_env }}'
+
 terraform_app_name: openvpn
 terraform_grp_prefix: cdp
-terraform_state_file: '{{ target_env }}-{{ terraform_app_name }}-{{ terraform_layer }}.tfstate'
-template_inventory: 'openvpn_instances.gcp.yml.j2'
-template_tfvars: 'tfvars.json.j2'
+template_inventory: 'inventories/openvpn_instances.gcp.yml.j2'
 
-inventory_dest: "{{ playbook_dir }}/../../../inventories/openvpn_lab_anis"
+inventory_dest: "{{ ansible_inventory_sources[0] }}"
 
-instances_project_region: "europe-north1"
+instances_region: "europe-north1"
 
 instance_roles:
   openvpn:
@@ -36,6 +34,7 @@ instance_roles:
 
     count: 1
     preemptible: true
+    spot: true
 
     labels:
       createdby: iac
@@ -46,11 +45,11 @@ instance_roles:
       instance_role: openvpn
 
     tags:
-    - ssh
-    - openvpn
+      - ssh
+      - openvpn
 
     service_account:
-      email: "1095120801558-compute@developer.gserviceaccount.com"
+      email: "111378343683-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]
 
     can_ip_forward: true

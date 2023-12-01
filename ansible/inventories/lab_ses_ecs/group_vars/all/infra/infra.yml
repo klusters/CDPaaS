@@ -1,23 +1,20 @@
 ---
 
-target_env: lab-ecs
+target_env: lab-ses-ecs
 
 cloud_provider: 'gcp'
 
 terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
-terraform_project_version: 'cdpaas_init'
+terraform_project_version: 'multilayer'
 
 terraform_env_vars: {}
 
 terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
 terraform_layer: 'instances'
-terraform_workspace: '{{ target_env }}'
+
 terraform_grp_prefix: cdp
 terraform_app_name: cdp
-terraform_state_file: '{{ target_env }}-{{ terraform_app_name }}-{{ terraform_layer }}.tfstate'
-
-template_inventory: 'cluster_gce_instances.gcp.yml.j2'
-template_tfvars: 'tfvars.json.j2'
+template_inventory: 'inventories/cluster_gce_instances.gcp.yml.j2'
 
 inventory_dest: "{{ ansible_inventory_sources[0] }}"
 
@@ -87,10 +84,10 @@ instance_roles:
       instance_role: utilities
 
     tags:
-      - ssh
+      - openbar
 
     service_account:
-      email: "1095120801558-compute@developer.gserviceaccount.com"
+      email: "111378343683-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]
 
   masters:
@@ -156,10 +153,10 @@ instance_roles:
       instance_role: masters
 
     tags:
-    - ssh
+      - openbar
 
     service_account:
-      email: "1095120801558-compute@developer.gserviceaccount.com"
+      email: "111378343683-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]
 
   edges:
@@ -225,10 +222,10 @@ instance_roles:
       instance_role: edges
 
     tags:
-    - ssh
+      - openbar
 
     service_account:
-      email: "1095120801558-compute@developer.gserviceaccount.com"
+      email: "111378343683-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]
 
   workers:
@@ -294,10 +291,10 @@ instance_roles:
       instance_role: workers
 
     tags:
-    - ssh
+      - openbar
 
     service_account:
-      email: "1095120801558-compute@developer.gserviceaccount.com"
+      email: "111378343683-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]
 
   ecs:
@@ -336,7 +333,7 @@ instance_roles:
     source_image: "rhel-8"
     source_image_project: "rhel-cloud"
 
-    machine_type: n2d-standard-32
+    machine_type: n2-standard-32
 
     subnetwork: priv-net
 
@@ -353,8 +350,8 @@ instance_roles:
       instance_role: ecs
 
     tags:
-    - ssh
+      - openbar
 
     service_account:
-      email: "1095120801558-compute@developer.gserviceaccount.com"
+      email: "111378343683-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]

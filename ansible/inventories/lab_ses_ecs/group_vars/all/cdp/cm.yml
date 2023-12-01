@@ -17,7 +17,7 @@ cloudera_manager_csds: []
 
 cloudera_manager_license_file: "{{ playbook_dir }}/../../../licenses/license.txt"
 
-cloudera_manager_version: 7.10.1
+cloudera_manager_version: 7.11.3.2
 # cloudera_manager_version_chf: '-h10-45231598'
 
 cloudera_manager_repo_url: "{{ cdp_parcels_repository_base }}/cm7/{% if cloudera_manager_version_chf is defined %}patch/{% endif %}{{ cloudera_manager_version }}{{ cloudera_manager_version_chf | d('') }}/redhat{{ ansible_distribution_major_version }}/yum"
