@@ -4,19 +4,22 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  pre_tasks:
+    - name: Get my public IP
+      community.general.ipify_facts:
+      when: terraform_layer == 'fw_rules'
 
   roles:
-    - role: cloud-infra
+    - role: cloud_infra
       vars:
         state: present
 
 - name: Check SSH availability
   hosts: all
   gather_facts: false
-
   tasks:
-
     - name: Wait for system to become reachable
       ansible.builtin.wait_for_connection:
         timeout: 90
         delay: 15
+      when: not skip_ssh | d(false)

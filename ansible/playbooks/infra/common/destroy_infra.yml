@@ -4,9 +4,13 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  pre_tasks:
+    - name: Get my public IP
+      community.general.ipify_facts:
+      when: terraform_layer == 'fw_rules'
 
   roles:
 
-    - role: cloud-infra
+    - role: cloud_infra
       vars:
         state: absent
