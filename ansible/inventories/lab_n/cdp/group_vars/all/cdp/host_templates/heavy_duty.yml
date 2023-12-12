@@ -1,0 +1,148 @@
+---
+
+heavy_duty_host_templates:
+  edge-001:
+    HBASE:
+      - GATEWAY
+    HDFS:
+      - BALANCER
+      - GATEWAY
+      - HTTPFS
+    HIVE:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+    HUE:
+      - HUE_SERVER
+      - KT_RENEWER
+    INFRA_SOLR:
+      - GATEWAY
+      - SOLR_SERVER
+    KNOX:
+      - KNOX_GATEWAY
+    OOZIE:
+      - OOZIE_SERVER
+    QUEUEMANAGER:
+      - QUEUEMANAGER_STORE
+      - QUEUEMANAGER_WEBAPP
+    RANGER:
+      - RANGER_ADMIN
+      - RANGER_TAGSYNC
+      - RANGER_USERSYNC
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - JOBHISTORY
+
+  master-001:
+    HBASE:
+      - GATEWAY
+      - MASTER
+    HDFS:
+      - GATEWAY
+      - JOURNALNODE
+      - FAILOVERCONTROLLER
+      - NAMENODE
+    HIVE:
+      - GATEWAY
+      - HIVEMETASTORE
+    HIVE_ON_TEZ:
+      - GATEWAY
+      - HIVESERVER2
+    INFRA_SOLR:
+      - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - RESOURCEMANAGER
+    ZOOKEEPER:
+      - SERVER
+
+  master-002:
+    HDFS:
+      - GATEWAY
+      - JOURNALNODE
+      - FAILOVERCONTROLLER
+      - NAMENODE
+    HIVE:
+      - GATEWAY
+      - HIVEMETASTORE
+    IMPALA:
+      - CATALOGSERVER
+      - STATESTORE
+    INFRA_SOLR:
+      - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - RESOURCEMANAGER
+    ZOOKEEPER:
+      - SERVER
+
+  master-003:
+    HBASE:
+      - GATEWAY
+      - MASTER
+    HDFS:
+      - GATEWAY
+      - JOURNALNODE
+    INFRA_SOLR:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+      - HIVESERVER2
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+    ZOOKEEPER:
+      - SERVER
+
+  workers:
+    HBASE:
+      - GATEWAY
+      - REGIONSERVER
+    HDFS:
+      - GATEWAY
+      - DATANODE
+    HIVE:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+    IMPALA:
+      - IMPALAD
+    INFRA_SOLR:
+      - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - NODEMANAGER
+
+  newworkers:
+    HBASE:
+      - GATEWAY
+      - REGIONSERVER
+    HDFS:
+      - GATEWAY
+      - DATANODE
+    HIVE:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+    IMPALA:
+      - IMPALAD
+    INFRA_SOLR:
+      - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+      - NODEMANAGER
+
+  utility-001:
+    HDFS:
+      - GATEWAY

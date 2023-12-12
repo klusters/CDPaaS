@@ -1,0 +1,17 @@
+---
+
+cdp_services:
+  - HBASE
+  - HDFS
+  - HIVE
+  - HIVE_ON_TEZ
+  - HUE
+  - IMPALA
+  - INFRA_SOLR
+  - KNOX
+  - OOZIE
+  - QUEUEMANAGER
+  - RANGER
+  - TEZ
+  - YARN
+  - ZOOKEEPER

@@ -1,0 +1,51 @@
+---
+
+cloudera_manager_port: "7180"
+cloudera_manager_https_port: "7183"
+
+
+cloudera_manager_tls_validate_certs: no
+cloudera_manager_options: {}
+cloudera_manager_cmf_java_opts: "-Xmx4G -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
+
+cloudera_manager_csds: []
+  # - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/csd/LIVY_FOR_SPARK3-0.6.3000.3.2.7172000.10-1.jar"
+  # - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/csd/SPARK3_ON_YARN-3.2.3.3.2.7172000.10-1.jar"
+
+cloudera_manager_license_file: "{{ playbook_dir }}/../../../licenses/license.txt"
+
+cloudera_manager_version: 7.6.7
+cloudera_manager_version_chf: '-h13-46891257'
+
+cloudera_manager_repo_url: "{{ cdp_parcels_repository_base }}/cm7/{% if cloudera_manager_version_chf is defined %}patch/{% endif %}{{ cloudera_manager_version }}{{ cloudera_manager_version_chf | d('') }}/redhat{{ ansible_distribution_major_version }}/yum"
+
+install_repo_on_host: false
+
+base_dn: "dc={{ (krb5_realm | lower).split('.') | join(',dc=') }}"
+user_dn: "cn=users,cn=accounts,{{ base_dn }}"
+group_dn: "cn=groups,cn=accounts,{{ base_dn }}"
+
+auth_providers:
+  freeipa:
+    ldap_bind_user_dn: "uid=admin,{{ user_dn }}"
+    ldap_bind_password: "{{ ipaadmin_password }}"
+    ldap_search_base:
+      user: "{{ user_dn }}"
+      group: "{{ group_dn }}"
+    ldap_object_class:
+      user: "person"
+      group: "groupofnames"
+    ldap_attribute:
+      user: "uid"
+      group: "cn"
+      member: "member"
+    type: LDAP
+    ldap_url: "ldaps://{{ groups.cdp_idm | first }}"
+
+cloudera_manager_external_auth:
+  provider: freeipa
+  external_first: no
+  external_only: no
+  role_mappings:
+  - group: supergroup
+    roles: [ROLE_ADMIN]
