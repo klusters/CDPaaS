@@ -49,7 +49,7 @@
       ansible.builtin.copy:
         dest: /etc/resolv.conf
         content: |
-          search lab.zlabia.africa
+          search {{ ipaserver_domain }}
           {% for server in groups.cdp_idm | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list %}
           nameserver {{ server }}
           {% endfor %}

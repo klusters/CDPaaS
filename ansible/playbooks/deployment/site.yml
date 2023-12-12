@@ -13,7 +13,7 @@
   tags: os
 
 - name: Set up FreeIPA clients
-  import_playbook: pre_steps/freeipa.yml
+  ansible.builtin.import_playbook: pre_steps/freeipa.yml
   tags: freeipa
 
 - name: Set up Certificates

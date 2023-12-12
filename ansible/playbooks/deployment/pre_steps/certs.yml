@@ -127,5 +127,5 @@
         owner: cloudera-scm
         group: cloudera-scm
         state: directory
-        mode: u=rwX,g=,o=
+        # mode: u=rwX,g=,o=
         recurse: yes

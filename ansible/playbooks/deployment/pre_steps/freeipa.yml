@@ -20,7 +20,7 @@
       ansible.builtin.copy:
         dest: /etc/resolv.conf
         content: |
-          search lab.zlabia.africa
+          search {{ ipaserver_domain }}
           {% for server in groups.cdp_idm | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list %}
           nameserver {{ server }}
           {% endfor %}
@@ -60,18 +60,10 @@
       service:
         name: sssd
         state: restarted
-  tags:
-    - security
-    - kerberos
-    - tls
 
 - name: FreeIPA post tasks
   hosts: "{{ groups.cdp_idm | first }}"
   become: true
-  tags:
-    - security
-    - kerberos
-    - tls
   tasks:
     - name: Create Users
       freeipa.ansible_freeipa.ipauser:
