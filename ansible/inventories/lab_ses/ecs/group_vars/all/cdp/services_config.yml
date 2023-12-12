@@ -111,13 +111,6 @@ fresh_install_configs:
       ranger.usersync.group.memberattributename: "{{ auth_providers.freeipa.ldap_attribute.member }}"
       ranger.usersync.ldap.url:                  "{{ auth_providers.freeipa.ldap_url }}"
       ranger.usersync.group.based.role.assignment.rules: "&ROLE_SYS_ADMIN:g:supergroup"
-  KUDU:
-    KUDU_MASTER:
-      fs_wal_dir: /data/04/kudu/master/WALs
-      fs_data_dirs: "/data/01/kudu/master/data,/data/02/kudu/master/data,/data/03/kudu/master/data,/data/05/kudu/master/data"
-    KUDU_TSERVER:
-      fs_wal_dir: /data/05/kudu/tserver/WALs
-      fs_data_dirs: "/data/01/kudu/tserver/data,/data/02/kudu/tserver/data,/data/03/kudu/tserver/data,/data/04/kudu/tserver/data"
   KAFKA:
     SERVICEWIDE:
       offsets.topic.replication.factor: 3

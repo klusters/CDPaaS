@@ -1,0 +1,37 @@
+---
+
+krb5_kdc_type: Red Hat IPA
+krb5_enc_types: aes256-cts
+krb5_realm: LAB.ZLABIA.AFRICA
+
+ipaserver_realm: "{{ krb5_realm }}"
+ipaserver_domain: "{{ krb5_domain | default(krb5_realm | lower) }}"
+
+krb5_kdc_admin_user: "admin@{{ krb5_realm }}"
+krb5_kdc_admin_password: "{{ ipaadmin_password }}"
+krb5_kdc_host: "{{ groups.cdp_idm | first }}"
+
+ipaclient_force_join: true
+ipaclient_allow_repair: true
+
+ipaserver_setup_dns: true
+ipareplica_setup_dns: true
+ipaserver_auto_forwarders: true
+ipareplica_auto_forwarders: true
+ipaserver_auto_reverse: true
+ipareplica_auto_reverse: true
+ipasssd_enable_dns_updates: true
+ipaserver_no_dnssec_validation: true
+ipareplica_no_dnssec_validation: true
+ipaserver_allow_zone_overlap: true
+ipareplica_allow_zone_overlap: true
+ipaserver_setup_firewalld: false
+ipareplica_setup_firewalld: false
+
+ipaserver_setup_adtrust: false
+ipareplica_setup_adtrust: false
+
+ipaserver_setup_ca: true
+ipareplica_setup_ca: true
+
+ipa_acl_trusted_network: 10.0.21.0/24
