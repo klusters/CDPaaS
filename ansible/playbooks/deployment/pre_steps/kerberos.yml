@@ -4,9 +4,9 @@
   hosts: deployment
   become: true
 
-  roles:
-    - role: cloudera.cluster.prereqs.kerberos
-      when: krb5_kdc_host is defined or 'krb5_server' in groups
+  # roles:
+  #   - role: cloudera.cluster.prereqs.kerberos
+  #     when: krb5_kdc_host is defined or 'krb5_server' in groups
 
   post_tasks:
     - name: Configure in krb5.conf
