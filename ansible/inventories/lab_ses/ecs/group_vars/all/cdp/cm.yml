@@ -15,7 +15,7 @@ cloudera_manager_csds: []
   # - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/csd/LIVY_FOR_SPARK3-0.6.3000.3.2.7172000.10-1.jar"
   # - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/csd/SPARK3_ON_YARN-3.2.3.3.2.7172000.10-1.jar"
 
-cloudera_manager_license_file: "{{ playbook_dir }}/../../../licenses/license.txt"
+cloudera_manager_license_file: "{{ ansible_inventory_sources[0] }}/../../../licenses/license.txt"
 
 cloudera_manager_version: 7.11.3.2
 # cloudera_manager_version_chf: '-h10-45231598'

@@ -1,0 +1,24 @@
+---
+
+parcel_version: 7.1.9
+cdp_parcels_repo_base: https://archive.cloudera.com/p
+
+cdp_versions:
+  7.1.7:
+    CHF: 2047
+    Build: 48043626
+
+  7.1.9:
+    CHF: 2
+    Build: 46689620
+
+
+parcels_files:
+  cdp:
+    RedHat: "CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}-el{{ ansible_distribution_major_version }}.parcel"
+    Ubuntu: "CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}-{{ ansible_distribution_release }}.parcel"
+
+parcel_hotfix_version: '{{ cdp_versions[parcel_version].CHF | default(0) }}'
+parcel_build_version: '{{ cdp_versions[parcel_version].Build }}'
+cdp_parcels_repo: "{{ cdp_parcels_repo_base }}/cdh7/{{ parcel_version }}.{{ cdp_versions[parcel_version].CHF | default(0) }}/parcels/"
+cdp_parcels_file: "{{ cdp_parcels_repo }}/{{ parcels_files.cdp[ansible_distribution] }}"

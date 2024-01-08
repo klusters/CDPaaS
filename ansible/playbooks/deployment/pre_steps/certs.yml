@@ -1,5 +1,8 @@
+---
+
 - name: Init Cluster Deployment Tasks
   hosts: localhost
+  strategy: free
   gather_facts: false
   tasks:
     - name: Create local temp directories
@@ -40,18 +43,36 @@
   gather_facts: true
   strategy: free
   pre_tasks:
-    - name: Create AutoTLS directories
+    - name: Prepare AutoTLS
+      when: autotls_base_dir is defined
+      block:
+        - name: Create AutoTLS directories
+          ansible.builtin.file: "{{ __dir }}"
+          loop:
+            - path: "{{ autotls_base_dir }}/sources/certs"
+              state: directory
+            - path: "{{ autotls_base_dir }}/sources/keys"
+              state: directory
+            - path: "{{ autotls_base_dir }}/sources/common"
+              state: directory
+          loop_control:
+            loop_var: __dir
+
+    - name: Create Certificates directories
       ansible.builtin.file: "{{ __dir }}"
       loop:
-        - path: "{{ autotls_base_dir }}/sources/certs"
+        - path: "{{ base_dir_security }}"
           state: directory
-        - path: "{{ autotls_base_dir }}/sources/keys"
+        - path: "{{ base_dir_security_jks }}"
           state: directory
-        - path: "{{ autotls_base_dir }}/sources/common"
+        - path: "{{ base_dir_security_pki }}"
+          state: directory
+        - path: "{{ tls_key_password_file | dirname }}"
+          state: directory
+        - path: "{{ tls_chain_path | dirname }}"
           state: directory
       loop_control:
         loop_var: __dir
-
 
   tasks:
     - include_role:
@@ -93,39 +114,42 @@
     local_certs_dir: "{{ local_temp_dir }}/certs"
 
   tasks:
-    - name: Copy all certificates and keys from all hosts to cloudera_manager
-      ansible.posix.synchronize:
-        src: "{{ local_certs_dir }}/"
-        dest: "{{ item.dest }}/"
-        mode: push
-        rsync_opts: "{{ item.rsync_opts }}"
-      loop:
-        - dest: "{{ autotls_base_dir }}/sources/certs"
-          rsync_opts:
-            - "--include=*.pem"
-            - "--exclude=*.key.unenc"
+    - name: Prepare AutoTLS
+      when: autotls_base_dir is defined
+      block:
+        - name: Copy all certificates and keys from all hosts to cloudera_manager
+          ansible.posix.synchronize:
+            src: "{{ local_certs_dir }}/"
+            dest: "{{ item.dest }}/"
+            mode: push
+            rsync_opts: "{{ item.rsync_opts }}"
+          loop:
+            - dest: "{{ autotls_base_dir }}/sources/certs"
+              rsync_opts:
+                - "--include=*.pem"
+                - "--exclude=*.key.unenc"
 
-        - dest: "{{ autotls_base_dir }}/sources/keys"
-          rsync_opts:
-            - "--include=*.key.unenc"
-            - "--exclude=*.pem"
+            - dest: "{{ autotls_base_dir }}/sources/keys"
+              rsync_opts:
+                - "--include=*.key.unenc"
+                - "--exclude=*.pem"
 
-    - name: Create truststore & keystore password files
-      ansible.builtin.copy:
-        dest: "{{ item.file }}"
-        content: "{{ item.content }}"
-      loop:
-        - file: "{{ autotls_base_dir }}/sources/common/keystore.pwd"
-          content: "{{ tls_keystore_password }}"
+        - name: Create truststore & keystore password files
+          ansible.builtin.copy:
+            dest: "{{ item.file }}"
+            content: "{{ item.content }}"
+          loop:
+            - file: "{{ autotls_base_dir }}/sources/common/keystore.pwd"
+              content: "{{ tls_keystore_password }}"
 
-        - file: "{{ autotls_base_dir }}/sources/common/truststore.pwd"
-          content: "{{ tls_truststore_password }}"
+            - file: "{{ autotls_base_dir }}/sources/common/truststore.pwd"
+              content: "{{ tls_truststore_password }}"
 
-    - name: Set permissions on AutoTLS directories
-      ansible.builtin.file:
-        path: "{{ autotls_base_dir }}"
-        owner: cloudera-scm
-        group: cloudera-scm
-        state: directory
-        # mode: u=rwX,g=,o=
-        recurse: yes
+        - name: Set permissions on AutoTLS directories
+          ansible.builtin.file:
+            path: "{{ autotls_base_dir }}"
+            owner: cloudera-scm
+            group: cloudera-scm
+            state: directory
+            # mode: u=rwX,g=,o=
+            recurse: yes

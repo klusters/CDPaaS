@@ -5,23 +5,21 @@ target_env: build-cdp-parcels
 cloud_provider: 'gcp'
 
 terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
-terraform_project_version: '3.0.4'
+terraform_project_version: 'multilayer'
 
 terraform_env_vars: {}
 
-terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
+terraform_dir: "{{ ansible_inventory_sources[0] }}/../../tf-cdp-cluster-{{ target_env }}"
 terraform_layer: 'instances'
-terraform_workspace: '{{ target_env }}'
+
 terraform_grp_prefix: parcels
 terraform_app_name: parcels
-terraform_state_file: '{{ target_env }}-{{ terraform_app_name }}-{{ terraform_layer }}.tfstate'
 
-template_inventory: 'openvpn_instances.gcp.yml.j2'
-template_tfvars: 'tfvars.json.j2'
+template_inventory: 'inventories/openvpn_instances.gcp.yml.j2'
 
-inventory_dest: "{{ playbook_dir }}/../../../inventories/build_parcels"
+inventory_dest: "{{ ansible_inventory_sources[0] }}"
 
-instances_project_region: "europe-north1"
+instances_region: "europe-north1"
 
 instance_roles:
   build:
@@ -37,8 +35,8 @@ instance_roles:
         disk_labels:
           purpose: opt-cloudera-parcels
 
-    source_image: "rocky-linux-8-optimized-gcp"
-    source_image_project: "rocky-linux-cloud"
+    source_image: "rhel-8"
+    source_image_project: "rhel-cloud"
 
     machine_type: e2-highcpu-4
 
@@ -46,6 +44,7 @@ instance_roles:
 
     count: 1
     preemptible: true
+    spot: true
 
     labels:
       createdby: iac
@@ -59,8 +58,8 @@ instance_roles:
       - ssh
 
     service_account:
-      email: "1095120801558-compute@developer.gserviceaccount.com"
-      scopes: ["storage-rw", "compute-rw"]
+      email: "12089038790-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
 
     access_config:
       - nat_ip:

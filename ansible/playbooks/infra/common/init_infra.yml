@@ -9,6 +9,17 @@
       community.general.ipify_facts:
       when: terraform_layer == 'fw_rules'
 
+    - name: Get CDP Snapshot
+      google.cloud.gcp_compute_snapshot_info:
+        project: "{{ lookup('env', 'GCLOUD_PROJECT') }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ lookup('env','GOOGLE_APPLICATION_CREDENTIALS') }}"
+        filters:
+          - labels.parcel_version = "{{ parcel_version_label }}"
+          - labels.parcel_hotfix_version = "{{ parcel_hotfix_version }}"
+      register: latest_snapshot
+      when: instances_use_snapshots | default(false)
+
   roles:
     - role: cloud_infra
       vars:

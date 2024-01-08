@@ -7,16 +7,31 @@ update_services: yes
 definition_path: "{{ ansible_inventory_sources[0] }}/../../../definitions/"
 definition_file: CDPaaS.yml
 
-cdp_parcels_repository_base: "https://archive.cloudera.com/p"
-
-cdp_parcels_repositories:
-  - "{{ cdp_parcels_repository_base }}/cdh7/7.1.7.2046/parcels/"
-  # - "{{ cdp_parcels_repository_base }}/spark3/3.2.7172000.10/parcels/"
-
 cdp_security_features:
   kerberos: true
-  tls: false
+  tls: true
   hdfs_encryption: false
 
 cdp_cluster_name: N-CI-LAB
 cluster_duty_type: heavy_duty
+
+parcel_version: 7.1.7
+cdp_parcels_repo_base: https://archive.cloudera.com/p
+
+cdp_versions:
+  7.1.7:
+    CHF: 2047
+    Build: 48043626
+
+  7.1.9:
+    CHF: 2
+    Build: 46689620
+
+parcel_hotfix_version: '{{ cdp_versions[parcel_version].CHF | default(0) }}'
+parcel_version_label: "{{ parcel_version | regex_replace('\\.', '-') }}"
+parcel_build_version: '{{ cdp_versions[parcel_version].Build }}'
+cdp_parcels_repo: "{{ cdp_parcels_repo_base }}/cdh7/{{ parcel_version }}.{{ cdp_versions[parcel_version].CHF | default(0) }}/parcels/"
+
+cdp_parcels_repositories:
+  - "{{ cdp_parcels_repo }}"
+  # - "{{ cdp_parcels_repo_base }}/spark3/3.2.7172000.10/parcels/"

@@ -2,7 +2,7 @@
 
 krb5_kdc_type: Red Hat IPA
 krb5_enc_types: aes256-cts
-krb5_realm: LAB.ZLABIA.AFRICA
+krb5_realm: LABN.ZLABIA.AFRICA
 
 ipaserver_realm: "{{ krb5_realm }}"
 ipaserver_domain: "{{ krb5_domain | default(krb5_realm | lower) }}"

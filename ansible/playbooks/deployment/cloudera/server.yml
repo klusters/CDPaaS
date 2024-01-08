@@ -8,22 +8,28 @@
   tasks:
     - name: Set up Cloudera Manager Server
       ansible.builtin.include_role:
-        name: cloudera.cluster.cloudera_manager.server
+        name: "{{ item }}"
+      loop:
+        - cloudera.cluster.cloudera_manager.server
+        - cloudera.cluster.cloudera_manager.server_tls
+
+    - name: Set Cloudera Manager to HTTPS
+      when: tls
+      ansible.builtin.set_fact:
+        cloudera_manager_url: "https://{{ cloudera_manager_host }}:{{ cloudera_manager_https_port }}"
 
     - name: Wait for Cloudera Manager Server to come back up
       ansible.builtin.meta: flush_handlers
 
-    - name: "Run role {{ item }}"
+    - name: Set up Cloudera Manager Server
       ansible.builtin.include_role:
         name: "{{ item }}"
       loop:
-        - cloudera.cluster.cloudera_manager.license
         - cloudera.cluster.cloudera_manager.config
+        - cloudera.cluster.cloudera_manager.license
         - cloudera.cluster.cloudera_manager.external_auth
         - cloudera.cluster.cloudera_manager.external_account
 
-    - name: Wait for Cloudera Manager Server to come back up
-      ansible.builtin.meta: flush_handlers
 
     - name: "Run role {{ item }}"
       ansible.builtin.include_role:

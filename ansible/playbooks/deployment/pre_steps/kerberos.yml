@@ -16,6 +16,7 @@
         option: '{{ item.option }}'
         value: '{{ item.value | default(omit) }}'
         state: '{{ item.state }}'
+        mode: '0644'
       loop:
         - section: libdefaults
           option: "  renew_lifetime"
@@ -28,10 +29,10 @@
 
         - section: libdefaults
           option: "  permitted_enctypes"
-          value: aes256-cts-hmac-sha1-96 aes256-cts-hmac-sha384-192 aes128-cts-hmac-sha256-128
+          value: aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha256-128
           state: present
 
         - section: libdefaults
           option: "  default_tkt_enctypes"
-          value: aes256-cts-hmac-sha1-96 aes256-cts-hmac-sha384-192 aes128-cts-hmac-sha256-128
+          value: aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha256-128
           state: present

@@ -1,13 +1,5 @@
 ---
 
-parcel_version: 7.1.9
-parcel_hotfix_version: 0
-parcel_build_version: 44702451
-cdp_parcels_repo_base: https://archive.cloudera.com/p
-
-cdp_parcels_file: "{{ cdp_parcels_repo_base }}/cdh7/{{ parcel_version }}.{{ parcel_hotfix_version }}/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version }}.{{ parcel_build_version }}-el{{ ansible_distribution_major_version }}.parcel"
-# cdp_parcels_file: "{{ cdp_parcels_repo_base }}/p/cdh7/7.1.7.2000/parcels/KEYTRUSTEE_SERVER-7.1.7.2000-1.keytrustee7.1.7.2000.p0.37147774-el{{ ansible_distribution_major_version }}.parcel"
-
 artifacts_delivery_dir: "/opt/cloudera/parcels/"
 artifacts_download_dir: "/tmp"
 repo_download_username: "{{ cloudera_manager_repo_username }}"

@@ -122,7 +122,7 @@ heavy_duty_host_templates:
       - GATEWAY
       - NODEMANAGER
 
-  newworkers:
+  newwks:
     HBASE:
       - GATEWAY
       - REGIONSERVER
@@ -144,5 +144,12 @@ heavy_duty_host_templates:
       - NODEMANAGER
 
   utility-001:
+    HDFS:
+      - GATEWAY
+
+  sbx2s:
+    HDFS:
+      - GATEWAY
+  sbx3s:
     HDFS:
       - GATEWAY

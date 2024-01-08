@@ -1,0 +1,35 @@
+---
+
+cdp_version: 7.1.7
+cloudera_manager_version: 7.6.7
+cdp_parcels_repository_base: "https://archive.cloudera.com/p"
+
+cdp_versions:
+  7.1.7:
+    CHF: 2046
+    Build: 46875634
+
+  7.1.9:
+    CHF: 2
+    Build: 46689620
+
+cm_versions:
+  7.11.3.2:
+    CHF: ''
+    Build: 46642574
+
+  7.6.7:
+    CHF: 13
+    Build: 46891257
+
+cloudera_manager_version_chf: "{{ cm_versions[cloudera_manager_version].CHF }}"
+cloudera_manager_build_version: "{{ cm_versions[cloudera_manager_version].Build }}"
+cloudera_manager_repo_url: "{{ cdp_parcels_repository_base }}/cm7/{% if cloudera_manager_version_chf is defined %}patch/{{ cloudera_manager_version }}-h{{ cloudera_manager_version_chf }}-{{ cloudera_manager_build_version }}{% else %}{{ cloudera_manager_version }}/redhat{{ ansible_distribution_major_version }}/yum"
+
+cdp_parcels_repositories:
+  - "{{ cdp_parcels_repository_base }}/cdh7/{{ cdp_version }}.{{ cdp_versions[cdp_version].CHF | default(0) }}/parcels/"
+
+parcels_files:
+  cdp:
+    RedHat: "CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}-el{{ ansible_distribution_major_version }}.parcel"
+    Ubuntu: "CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}-{{ ansible_distribution_release }}.parcel"

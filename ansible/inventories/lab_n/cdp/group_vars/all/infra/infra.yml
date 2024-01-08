@@ -9,7 +9,7 @@ terraform_project_version: 'multilayer'
 
 terraform_env_vars: {}
 
-terraform_dir: "{{ playbook_dir }}/../../../tf-cdp-cluster-{{ target_env }}"
+terraform_dir: "{{ ansible_inventory_sources[0] }}/../../../tf-cdp-cluster-{{ target_env }}"
 terraform_layer: 'instances'
 
 terraform_grp_prefix: cdp
@@ -19,6 +19,8 @@ template_inventory: 'inventories/cluster_gce_instances.gcp.yml.j2'
 inventory_dest: "{{ ansible_inventory_sources[0] }}"
 
 instances_project_region: "europe-north1"
+
+instances_use_snapshots: true
 
 instance_roles:
   utilities:
@@ -43,6 +45,17 @@ instance_roles:
         mount_path: /opt/cloudera
         disk_labels:
           purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 15
+        disk_type: pd-standard
+        disk_name: null
+        source_snapshot: "projects/{{ lookup('env','GCLOUD_PROJECT') }}/global/snapshots/{{ latest_snapshot.resources[0].name }}"
+        device_name: opt-cloudera-parcel-CDP-{{ parcel_version | regex_replace('_', '-') }}
+        mount_path: /opt/cloudera/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}
+        disk_labels:
+          purpose: cdp-{{ parcel_version_label }}
 
       - auto_delete: true
         boot: false
@@ -115,6 +128,17 @@ instance_roles:
 
       - auto_delete: true
         boot: false
+        disk_size_gb: 15
+        disk_type: pd-standard
+        disk_name: null
+        source_snapshot: "projects/{{ lookup('env','GCLOUD_PROJECT') }}/global/snapshots/{{ latest_snapshot.resources[0].name }}"
+        device_name: opt-cloudera-parcel-CDP-{{ parcel_version | regex_replace('_', '-') }}
+        mount_path: /opt/cloudera/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}
+        disk_labels:
+          purpose: cdp-{{ parcel_version_label }}
+
+      - auto_delete: true
+        boot: false
         disk_size_gb: 20
         disk_type: pd-standard
         disk_name: null
@@ -184,6 +208,17 @@ instance_roles:
 
       - auto_delete: true
         boot: false
+        disk_size_gb: 15
+        disk_type: pd-standard
+        disk_name: null
+        source_snapshot: "projects/{{ lookup('env','GCLOUD_PROJECT') }}/global/snapshots/{{ latest_snapshot.resources[0].name }}"
+        device_name: opt-cloudera-parcel-CDP-{{ parcel_version | regex_replace('_', '-') }}
+        mount_path: /opt/cloudera/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}
+        disk_labels:
+          purpose: cdp-{{ parcel_version_label }}
+
+      - auto_delete: true
+        boot: false
         disk_size_gb: 20
         disk_type: pd-standard
         disk_name: null
@@ -228,6 +263,166 @@ instance_roles:
       email: "12089038790-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]
 
+  sbx2s:
+    disk_size_gb: 50
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 50
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 30
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 15
+        disk_type: pd-standard
+        disk_name: null
+        source_snapshot: "projects/{{ lookup('env','GCLOUD_PROJECT') }}/global/snapshots/{{ latest_snapshot.resources[0].name }}"
+        device_name: opt-cloudera-parcel-CDP-{{ parcel_version | regex_replace('_', '-') }}
+        mount_path: /opt/cloudera/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}
+        disk_labels:
+          purpose: cdp-{{ parcel_version_label }}
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 20
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-01
+        mount_path: /data/01
+        disk_labels:
+          purpose: data-01
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 20
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-02
+        mount_path: /data/02
+        disk_labels:
+          purpose: data-02
+
+    source_image: "rhel-8"
+    source_image_project: "rhel-cloud"
+
+    machine_type: n2-standard-4
+
+    subnetwork: priv-net
+
+    count: 2
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: sbx2
+      purpose: cluster
+      instance_role: sbx2s
+
+    tags:
+      - openbar
+
+    service_account:
+      email: "12089038790-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
+
+  sbx3s:
+    disk_size_gb: 50
+    additional_disks:
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 50
+        disk_type: pd-standard
+        disk_name: null
+        device_name: logs
+        mount_path: /var/log
+        disk_labels:
+          purpose: logs
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 30
+        disk_type: pd-standard
+        disk_name: null
+        device_name: opt-cloudera
+        mount_path: /opt/cloudera
+        disk_labels:
+          purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 15
+        disk_type: pd-standard
+        disk_name: null
+        source_snapshot: "projects/{{ lookup('env','GCLOUD_PROJECT') }}/global/snapshots/{{ latest_snapshot.resources[0].name }}"
+        device_name: opt-cloudera-parcel-CDP-{{ parcel_version | regex_replace('_', '-') }}
+        mount_path: /opt/cloudera/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}
+        disk_labels:
+          purpose: cdp-{{ parcel_version_label }}
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 20
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-01
+        mount_path: /data/01
+        disk_labels:
+          purpose: data-01
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 20
+        disk_type: pd-standard
+        disk_name: null
+        device_name: data-02
+        mount_path: /data/02
+        disk_labels:
+          purpose: data-02
+
+    source_image: "rhel-8"
+    source_image_project: "rhel-cloud"
+
+    machine_type: e2-standard-4
+
+    subnetwork: priv-net
+
+    count: 2
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: sbx3
+      purpose: cluster
+      instance_role: sbx3s
+
+    tags:
+      - openbar
+
+    service_account:
+      email: "12089038790-compute@developer.gserviceaccount.com"
+      scopes: ["storage-ro"]
+
   workers:
     disk_size_gb: 50
     additional_disks:
@@ -250,6 +445,17 @@ instance_roles:
         mount_path: /opt/cloudera
         disk_labels:
           purpose: opt-cloudera
+
+      - auto_delete: true
+        boot: false
+        disk_size_gb: 15
+        disk_type: pd-standard
+        disk_name: null
+        source_snapshot: "projects/{{ lookup('env','GCLOUD_PROJECT') }}/global/snapshots/{{ latest_snapshot.resources[0].name }}"
+        device_name: opt-cloudera-parcel-CDP-{{ parcel_version | regex_replace('_', '-') }}
+        mount_path: /opt/cloudera/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}
+        disk_labels:
+          purpose: cdp-{{ parcel_version_label }}
 
       - auto_delete: true
         boot: false
@@ -297,7 +503,7 @@ instance_roles:
       email: "12089038790-compute@developer.gserviceaccount.com"
       scopes: ["storage-ro"]
 
-  # newworkers:
+  # newwks:
   #   disk_size_gb: 50
   #   additional_disks:
   #     - auto_delete: true
@@ -322,6 +528,17 @@ instance_roles:
 
   #     - auto_delete: true
   #       boot: false
+  #       disk_size_gb: 15
+  #       disk_type: pd-standard
+  #       disk_name: null
+  #       source_snapshot: "projects/{{ lookup('env','GCLOUD_PROJECT') }}/global/snapshots/{{ latest_snapshot.resources[0].name }}"
+  #       device_name: opt-cloudera-parcel-CDP-{{ parcel_version | regex_replace('_', '-') }}
+  #       mount_path: /opt/cloudera/parcels/CDH-{{ parcel_version }}-1.cdh{{ parcel_version }}.p{{ parcel_hotfix_version | default(0) }}.{{ parcel_build_version }}
+  #       disk_labels:
+  #         purpose: cdp-{{ parcel_version_label }}
+
+  #     - auto_delete: true
+  #       boot: false
   #       disk_size_gb: 20
   #       disk_type: pd-standard
   #       disk_name: null
@@ -343,11 +560,11 @@ instance_roles:
   #   source_image: "rhel-8"
   #   source_image_project: "rhel-cloud"
 
-  #   machine_type: n2-standard-4
+  #   machine_type: e2-standard-4
 
   #   subnetwork: priv-net
 
-  #   count: 2
+  #   count: 1
   #   preemptible: true
   #   spot: true
 
@@ -355,9 +572,9 @@ instance_roles:
   #     createdby: iac
   #     app: '{{ terraform_app_name }}'
   #     environment: '{{ target_env }}'
-  #     role: newworker
+  #     role: newwk
   #     purpose: cluster
-  #     instance_role: newworkers
+  #     instance_role: newwks
 
   #   tags:
   #     - openbar

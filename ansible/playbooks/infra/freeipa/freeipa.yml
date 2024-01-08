@@ -33,7 +33,7 @@
   handlers:
     - name: restart named
       service:
-        name: named
+        name: named-pkcs11
         state: restarted
   tags:
     - security

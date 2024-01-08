@@ -6,9 +6,9 @@ collections:
   #   type: git
   #   version: v3.4.2
 
-  - name: https://github.com/anisf/cloudera.cluster.git
+  - name: https://github.com/cloudera-labs/cloudera.cluster.git
     type: git
-    version: devel
+    version: v4.3.0
 
   - community.postgresql
   - community.crypto
@@ -19,7 +19,8 @@ collections:
   - google.cloud
   - name: klusters.system
     version: 1.2.5
-
+  - name: community.mysql
+    version: 3.1.0
 
 roles :
   - name: cloud_infra

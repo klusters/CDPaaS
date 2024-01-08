@@ -4,7 +4,7 @@ infra_type: local
 
 update_services: yes
 
-definition_path: "{{ playbook_dir }}/../../../definitions/"
+definition_path: "{{ ansible_inventory_sources[0] }}/../../../definitions/"
 definition_file: CDPaaS.yml
 
 cdp_parcels_repository_base: "https://archive.cloudera.com/p"

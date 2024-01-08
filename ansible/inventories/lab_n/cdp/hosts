@@ -10,15 +10,12 @@ cdp_worker
 [cluster_utilities_nodes:children]
 cdp_utility
 
-[cluster_ecs_nodes:children]
-cdp_ecs
-
 [cluster:children]
 cluster_master_nodes
 cluster_edge_nodes
 cluster_workers_nodes
 cluster_utilities_nodes
-cluster_ecs_nodes
+cluster_sbx2_nodes
 
 [deployment:children]
 cdp_cluster

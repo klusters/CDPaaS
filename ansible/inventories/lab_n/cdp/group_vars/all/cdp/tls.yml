@@ -1,23 +1,33 @@
 ---
 
-tls: false
-manual_tls_cert_distribution: false
-
-# tls_truststore_password: "{{ tls_truststore_password }}"
-# tls_keystore_password: "{{ tls_keystore_password }}"
-# tls_key_password: "{{ tls_key_password }}"
-local_temp_dir: '/tmp'
+# skip_user_group_init: true
+tls: "{{ cdp_security_features.tls }}"
+manual_tls_cert_distribution: "{{ cdp_security_features.tls }}"
 
 base_dir_security: /opt/cloudera/security
+tls_truststore_password: "dummy_password"
+tls_truststore_path: "{{ base_dir_security }}/jssecacerts"
+tls_chain_path: "{{ base_dir_security }}/x509/ca_cert.pem"
+
+base_dir_security_jks: "{{ base_dir_security }}/jks"
+tls_cert_path_generic: "{{ base_dir_security_jks }}/cert.pem"
+tls_keystore_password: "dummy_password"
+tls_keystore_path: "{{ base_dir_security_jks }}/{{ ansible_fqdn }}_node-keystore.jks"
+tls_keystore_path_generic: "{{ base_dir_security_jks }}/node-keystore.jks"
+
+tls_key_password: "dummy_password"
+
 base_dir_security_pki: "{{ base_dir_security }}/pki"
+tls_key_path_generic: "{{ base_dir_security_pki }}/agent.key"
+tls_pem_truststore_path: "{{ base_dir_security_pki }}/truststore.pem"
+
+tls_key_password_file: "/etc/cloudera-scm-agent/agentkey.pw"
+local_temp_dir: /tmp
+
 
 tls_cert_path: "{{ base_dir_security_pki }}/{{ inventory_hostname }}.pem"
 tls_key_path: "{{ base_dir_security_pki }}/{{ inventory_hostname }}.key"
 tls_key_path_plaintext: "{{ tls_key_path }}.unenc"
-tls_chain_path: "{{ autotls_base_dir }}/sources/common/merged_cacerts.pem"
-
-autotls_base_dir: /opt/cloudera/AutoTLS
-autotls_sudoer_user: autotlstmpuser
 
 tls_ca_certs:
   - alias: ipa_root_ca

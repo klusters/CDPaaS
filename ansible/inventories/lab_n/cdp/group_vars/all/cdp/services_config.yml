@@ -66,8 +66,8 @@ fresh_install_configs:
       journalNode_java_heapsize: "2147483648"
       journalnode_bind_wildcard: "true"
       process_auto_restart: "true"
-    SERVICEWIDE:
-      dfs_data_transfer_protection: privacy
+    # SERVICEWIDE:
+    #   dfs_data_transfer_protection: privacy
   YARN:
     JOBHISTORY:
       mr2_jobhistory_java_heapsize: "1073741824"
