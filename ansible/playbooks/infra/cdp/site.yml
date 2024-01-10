@@ -16,6 +16,10 @@
   import_playbook: secrets.yml
   tags: secrets
 
+- name: Set up YUM
+  import_playbook: yum.yml
+  tags: yum
+
 - name: Set up PostgreSQL
   import_playbook: postgresql.yml
   tags: postgresql

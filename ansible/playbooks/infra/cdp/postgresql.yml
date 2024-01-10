@@ -3,6 +3,14 @@
 - name: Postgresql Configuration
   hosts: db_server
   become: true
+  pre_tasks:
+    - name: Disable the built-in PostgreSQL module
+      ansible.builtin.command: dnf -qy module disable postgresql
+      when:
+        - postgresql_version is defined
+        - postgresql_enablerepo is defined
+      register: shell_output # <- Registers the command output.
+      changed_when: shell_output.rc != 0 # <- Uses the return code to define when the task has changed.
 
   roles:
     - role: geerlingguy.postgresql

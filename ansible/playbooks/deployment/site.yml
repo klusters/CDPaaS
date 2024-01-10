@@ -4,10 +4,6 @@
   ansible.builtin.import_playbook: always/cloudera_init.yml
   tags: always
 
-- name: YUM Configuration
-  ansible.builtin.import_playbook: pre_steps/yum.yml
-  tags: yum
-
 - name: OS Configuration
   ansible.builtin.import_playbook: pre_steps/os.yml
   tags: os
