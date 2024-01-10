@@ -29,10 +29,8 @@
 
         - section: libdefaults
           option: "  permitted_enctypes"
-          value: aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha256-128
-          state: present
+          state: absent
 
         - section: libdefaults
           option: "  default_tkt_enctypes"
-          value: aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha256-128
-          state: present
+          state: absent

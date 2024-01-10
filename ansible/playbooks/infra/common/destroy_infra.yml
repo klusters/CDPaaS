@@ -18,10 +18,21 @@
           - labels.parcel_version = "{{ parcel_version_label }}"
           - labels.parcel_hotfix_version = "{{ parcel_hotfix_version }}"
       register: latest_snapshot
-      when: instances_use_snapshots | default(false)
+      when:
+        - instances_use_snapshots | default(false)
+        - terraform_layer == 'instances'
+
+    - name: Get Services Accounts info
+      gcp_iam_service_account_info:
+        project: "{{ lookup('env', 'GCLOUD_PROJECT') }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ lookup('env','GOOGLE_APPLICATION_CREDENTIALS') }}"
+      register: service_accounts
+      when:
+        - instances_use_default_sa | default(false)
+        - terraform_layer == 'instances'
 
   roles:
-
     - role: cloud_infra
       vars:
         state: absent

@@ -9,7 +9,7 @@ terraform_project_version: 'multilayer'
 
 terraform_env_vars: {}
 
-terraform_dir: "{{ ansible_inventory_sources[0] }}/../../../tf-cdp-cluster-{{ target_env }}"
+terraform_dir: "/tmp/tf-cdp-cluster-{{ target_env }}"
 terraform_layer: 'instances'
 
 terraform_grp_prefix: cdp
@@ -19,6 +19,11 @@ template_inventory: 'inventories/cluster_gce_instances.gcp.yml.j2'
 inventory_dest: "{{ ansible_inventory_sources[0] }}"
 
 instances_project_region: "europe-north1"
+
+instances_use_snapshots: true
+instances_use_default_sa: true
+service_accounts: "{{ hostvars['localhost']['service_accounts'] }}"
+instances_default_sa_email: "{{ service_accounts.resources | selectattr('displayName', 'match', '^Compute Engine default service account$') | map(attribute='email') | first }}"
 
 instance_roles:
   utilities:
@@ -87,7 +92,7 @@ instance_roles:
       - openbar
 
     service_account:
-      email: "111378343683-compute@developer.gserviceaccount.com"
+      email: "{{ instances_default_sa_email }}"
       scopes: ["storage-ro"]
 
   masters:
@@ -156,7 +161,7 @@ instance_roles:
       - openbar
 
     service_account:
-      email: "111378343683-compute@developer.gserviceaccount.com"
+      email: "{{ instances_default_sa_email }}"
       scopes: ["storage-ro"]
 
   edges:
@@ -225,7 +230,7 @@ instance_roles:
       - openbar
 
     service_account:
-      email: "111378343683-compute@developer.gserviceaccount.com"
+      email: "{{ instances_default_sa_email }}"
       scopes: ["storage-ro"]
 
   workers:
@@ -294,7 +299,7 @@ instance_roles:
       - openbar
 
     service_account:
-      email: "111378343683-compute@developer.gserviceaccount.com"
+      email: "{{ instances_default_sa_email }}"
       scopes: ["storage-ro"]
 
   ecs:
@@ -353,5 +358,5 @@ instance_roles:
       - openbar
 
     service_account:
-      email: "111378343683-compute@developer.gserviceaccount.com"
+      email: "{{ instances_default_sa_email }}"
       scopes: ["storage-ro"]

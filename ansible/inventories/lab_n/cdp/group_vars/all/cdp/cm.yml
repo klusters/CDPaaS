@@ -3,7 +3,6 @@
 cloudera_manager_port: "7180"
 cloudera_manager_https_port: "7183"
 
-
 cloudera_manager_tls_validate_certs: no
 cloudera_manager_options: {}
 cloudera_manager_cmf_java_opts: "-Xmx4G -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
