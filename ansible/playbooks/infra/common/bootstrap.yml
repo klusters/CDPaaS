@@ -13,6 +13,7 @@
       ansible.builtin.copy:
         dest: /etc/hostname
         content: "{{ inventory_hostname | lower }}"
+        mode: '0644'
 
     - name: Ensure no Uppercase hostname is present in /etc/hosts
       ansible.builtin.lineinfile:
@@ -28,7 +29,7 @@
     - name: Disable Google Hostname setup
       ansible.builtin.copy:
         dest: /etc/dhcp/dhclient.d/1-google_hostname_off.sh
-        mode: 0755
+        mode: '0755'
         content: |
           #!/bin/bash
           # Block hosts changes by google-compute-engine
