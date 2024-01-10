@@ -1,0 +1,26 @@
+---
+
+tls: "{{ cdp_security_features.tls }}"
+manual_tls_cert_distribution: "{{ cdp_security_features.tls }}"
+
+local_temp_dir: '/tmp'
+
+base_dir_security: /opt/cloudera/security
+base_dir_security_pki: "{{ base_dir_security }}/pki"
+base_dir_security_jks: "{{ base_dir_security }}/jks"
+
+tls_cert_path: "{{ base_dir_security_pki }}/{{ inventory_hostname }}.pem"
+tls_key_path: "{{ base_dir_security_pki }}/{{ inventory_hostname }}.key"
+tls_key_path_plaintext: "{{ tls_key_path }}.unenc"
+tls_key_password_file: "/etc/cloudera-scm-agent/agentkey.pw"
+tls_chain_path: "{{ base_dir_security }}/x509/merged_cacerts.pem"
+tls_cert_path_generic: "{{ base_dir_security_pki }}/host.pem"
+tls_key_path_generic: "{{ base_dir_security_pki }}/host.key"
+tls_key_path_plaintext_generic: "{{ tls_key_path_generic }}.unenc"
+tls_keystore_path: "{{ base_dir_security_pki }}/{{ inventory_hostname }}.jks"
+tls_keystore_path_generic: "{{ base_dir_security_pki }}/host.jks"
+tls_truststore_path: "{{ base_dir_security_pki }}/truststore.jks"
+
+tls_ca_certs:
+  - alias: ipa_root_ca
+    path: "{{ playbook_dir }}/ca.crt"

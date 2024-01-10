@@ -1,0 +1,65 @@
+---
+
+target_env: lab-ses-02-ipa
+
+cloud_provider: 'gcp'
+
+terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
+terraform_project_version: 'multilayer'
+
+terraform_env_vars: {}
+
+terraform_dir: "/tmp/tf-cdp-cluster-{{ target_env }}"
+terraform_layer: 'instances'
+
+terraform_app_name: freeipa
+terraform_grp_prefix: cdp
+template_inventory: 'inventories/gce_instances.gcp.yml.j2'
+
+inventory_dest: "{{ ansible_inventory_sources[0] }}"
+
+instances_region: "europe-north1"
+
+instances_use_default_sa: true
+service_accounts: "{{ hostvars['localhost']['service_accounts'] }}"
+instances_default_sa_email: "{{ service_accounts.resources | selectattr('displayName', 'match', '^Compute Engine default service account$') | map(attribute='email') | first }}"
+
+instance_roles:
+  freeipa:
+    disk_size_gb: 150
+    additional_disks:
+    - auto_delete: true
+      boot: false
+      disk_size_gb: 100
+      disk_type: pd-standard
+      disk_name: null
+      device_name: logs
+      mount_path: /var/log
+      disk_labels:
+        purpose: logs
+
+    source_image: "rhel-8"
+    source_image_project: "rhel-cloud"
+
+    machine_type: t2d-standard-2
+
+    subnetwork: priv-net
+
+    count: 1
+    preemptible: true
+    spot: true
+
+    labels:
+      createdby: iac
+      app: '{{ terraform_app_name }}'
+      environment: '{{ target_env }}'
+      role: idm
+      purpose: idm
+      instance_role: freeipa
+
+    tags:
+      - openbar
+
+    service_account:
+      email: "{{ instances_default_sa_email }}"
+      scopes: ["storage-ro"]

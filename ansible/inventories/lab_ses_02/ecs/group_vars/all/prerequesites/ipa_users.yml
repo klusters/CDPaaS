@@ -1,0 +1,31 @@
+---
+
+ipa_users:
+  - name: anis.fathallah
+    first: Anis
+    last: FATHALLAH
+    password: "{{ ipa_user_anis_fathallah }}"
+
+  - name: sa01
+    first: sa
+    last: 01
+    password: "{{ ipa_user_sa01 }}"
+
+ipa_groups:
+  - name: supergroup
+    user:
+      - anis.fathallah
+
+  - name: admins
+    user:
+      - anis.fathallah
+      - admin
+
+  - name: trust_admins
+    user:
+      - anis.fathallah
+      - admin
+
+  - name: service_accounts
+    user:
+      - sa01

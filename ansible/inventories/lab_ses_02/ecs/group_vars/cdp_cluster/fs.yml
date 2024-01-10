@@ -1,0 +1,6 @@
+---
+
+dev_mapping: "{{ instance_roles[labels.instance_role] | json_query(dev_mapping_json_query) }}"
+dev_mapping_json_query: "additional_disks[].{dev_name: join('',['/dev/disk/by-id/google-', device_name]), mount_path: mount_path}"
+fs_skip_existence_check: true
+latest_snapshot: "{{ hostvars['localhost']['latest_snapshot'] }}"

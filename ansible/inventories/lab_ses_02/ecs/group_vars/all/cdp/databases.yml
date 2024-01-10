@@ -1,0 +1,76 @@
+---
+
+database_host: "{{ groups['db_server'][0] }}"
+database_type: postgresql
+database_port: 5432
+
+database_tls: no
+
+cloudera_manager_database_embedded: no
+cloudera_manager_database_host: "{{ database_host }}"
+cloudera_manager_database_name: cloudera_manager
+cloudera_manager_database_user:     "cloudera_manager-user"
+cloudera_manager_database_port: "{{ database_port }}"
+
+cdp_databases:
+  HIVE:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: hive
+    user:     "hive-user"
+    password: "{{ hive_database_password }}"
+  HUE:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: hue
+    user:     "hue-user"
+    password: "{{ hue_database_password }}"
+  OOZIE:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: oozie
+    user:     "oozie-user"
+    password: "{{ oozie_database_password }}"
+  RANGER:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: ranger_admin
+    user:     "ranger_admin-user"
+    password: "{{ ranger_admin_database_password }}"
+
+mgmt_databases:
+  REPORTSMANAGER:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: reportsmanager
+    user:     "reportsmanager-user"
+    password: "{{ reportsmanager_database_password }}"
+
+postgresql_version: 14
+postgresql_enablerepo: PostgreSQL-{{ postgresql_version }}
+postgresql_packages:
+  - "postgresql{{ postgresql_version }}"
+  - "postgresql{{ postgresql_version }}-server"
+  - "postgresql{{ postgresql_version }}-contrib"
+
+postgresql_data_dir: "/var/lib/pgsql/{{ postgresql_version }}/data"
+postgresql_config_path: "/var/lib/pgsql/{{ postgresql_version }}/data"
+postgresql_daemon: postgresql-{{ postgresql_version }}
+postgresql_bin_path: /usr/pgsql-{{ postgresql_version }}/bin
+
+postgresql_global_config_options:
+  - option: unix_socket_directories
+    value: '{{ postgresql_unix_socket_directories | join(",") }}'
+  - option: log_directory
+    value: 'log'
+  - option: listen_addresses
+    value: '*'
+  - option: max_connections
+    value: '1000'
+
+postgresql_hba_entries:
+  - {type: local, database: all, user: postgres, auth_method: peer}
+  - {type: local, database: all, user: all, auth_method: peer}
+  - {type: host, database: all, user: all, address: '10.0.21.0/24', auth_method: "{{ postgresql_auth_method }}"}
+  - {type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: "{{ postgresql_auth_method }}"}
+  - {type: host, database: all, user: all, address: '::1/128', auth_method: "{{ postgresql_auth_method }}"}
