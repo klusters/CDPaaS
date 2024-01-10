@@ -34,7 +34,9 @@
 
 - name: Set up AutoTLS
   ansible.builtin.import_playbook: cloudera/autotls.yml
-  tags: autotls
+  tags:
+    - autotls
+    - never
 
 - name: Deploy CDP Cluster
   ansible.builtin.import_playbook: cloudera/cluster.yml
