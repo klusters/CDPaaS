@@ -1,14 +1,9 @@
 ---
 collections:
 
-  # Cloudera collections
-  # - name: https://github.com/cloudera-labs/cloudera.cluster.git
-  #   type: git
-  #   version: v3.4.2
-
-  - name: https://github.com/cloudera-labs/cloudera.cluster.git
+  - name: https://github.com/anisf/cloudera.cluster.git
     type: git
-    version: v4.3.0
+    version: n-ci-lab
 
   - community.postgresql
   - community.crypto
@@ -25,7 +20,7 @@ collections:
 roles :
   - name: cloud_infra
     src: git+https://github.com/klusters/ansible-role-cloud_infra.git
-    version: 3.0.0
+    version: '3.1.1'
 
   - name: cloudera.deploy
     src: git+https://github.com/anisf/cloudera-deploy.git

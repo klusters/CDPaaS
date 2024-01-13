@@ -1,0 +1,37 @@
+---
+
+- name: Reconfigure SSSD
+  hosts: deployment
+  gather_facts: false
+  become: true
+  vars:
+    yum_packages: ['realmd', 'oddjob', 'oddjob-mkhomedir', 'sssd', 'adcli']
+  tasks:
+    - name: YUM packages installation
+      ansible.builtin.yum:
+        name: "{{ yum_packages }}"
+
+    - name: Configure DNS
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: |
+          search {{ krb5_domain | default(krb5_realm | lower) }}
+          {% for server in dns_servers %}
+          nameserver {{ server }}
+          {% endfor %}
+        mode: '0644'
+
+    - name: Reintegrate machines to domain
+      ansible.builtin.shell: |
+        export realmpassword="{{ cdp_manager_password }}"
+        rm -f /etc/sssd/sssd.conf
+        realm leave
+
+        echo $realmpassword | realm join "{{ krb5_realm }}" -U {{ cdp_manager_user }} \
+        --computer-ou="{{ ad_computers_ou }}" -v
+
+        sed -i 's@^use_fully_qualified_names.*@use_fully_qualified_names = False@g' /etc/sssd/sssd.conf
+
+        systemctl restart sssd
+
+        id {{ cdp_manager_user }}

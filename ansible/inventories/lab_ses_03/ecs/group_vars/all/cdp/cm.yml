@@ -1,0 +1,48 @@
+---
+
+cloudera_manager_port: "7180"
+cloudera_manager_https_port: "7183"
+
+cloudera_manager_tls_validate_certs: no
+cloudera_manager_options: {}
+cloudera_manager_cmf_java_opts: "-Xmx4G -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
+
+cloudera_manager_csds: []
+
+cloudera_manager_license_file: "{{ ansible_inventory_sources[0] }}/../../../licenses/license.txt"
+
+cloudera_manager_version: 7.11.3
+cloudera_manager_version_chf: '.3-47960007'
+
+cloudera_manager_repo_url: "{{ cdp_parcels_repo_base }}/cm7/{% if cloudera_manager_version_chf is defined %}patch/{% endif %}{{ cloudera_manager_version }}{{ cloudera_manager_version_chf | d('') }}/redhat{{ ansible_distribution_major_version }}/yum"
+
+install_repo_on_host: false
+
+base_dn: "DC={{ (krb5_realm | lower).split('.') | join(',DC=') }}"
+user_dn: "OU=Users,{{ base_dn }}"
+group_dn: "OU=Groups,{{ base_dn }}"
+
+auth_providers:
+  ad:
+    ldap_bind_user_dn: "{{ ad_binduser_dn }}"
+    ldap_bind_password: "{{ ad_binduser_password }}"
+    ldap_search_base:
+      user: "{{ user_dn }}"
+      group: "{{ group_dn }}"
+    ldap_object_class:
+      user: "person"
+      group: "group"
+    ldap_attribute:
+      user: "sAMAccountName"
+      group: "cn"
+      member: "member"
+    type: LDAP
+    ldap_url: "ldap://{{ krb5_realm | lower }}"
+
+cloudera_manager_external_auth:
+  provider: ad
+  external_first: no
+  external_only: no
+  role_mappings:
+  - group: CM_Admins
+    roles: [ROLE_ADMIN]

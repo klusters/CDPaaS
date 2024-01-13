@@ -1,0 +1,55 @@
+---
+
+target_env: "{{ lookup('env','USER') | lower }}"
+
+cloud_provider: 'gcp'
+
+terraform_project_repo: 'https://github.com/klusters/terraform-gcp-infra'
+terraform_project_version: 'multilayer'
+
+terraform_env_vars: {}
+
+terraform_dir: "/tmp/tf-cdp-cluster-{{ target_env }}"
+terraform_layer: 'fw_rules'
+
+skip_ssh: true
+cloud_infra_prepare_inventory: false
+
+fw_rules_project_id: "{{ lookup('env','GCLOUD_PROJECT') }}"
+fw_rules:
+  - name: "allow-ssh-{{ lookup('env','USER') | lower }}"
+    description: "Allow SSH for {{ lookup('env','USER') | lower }}"
+    direction: INGRESS
+    priority: null
+    ranges:
+      - "{{ ipify_public_ip }}/32"
+    source_tags: null
+    source_service_accounts: null
+    target_tags:
+      - ssh
+    target_service_accounts: null
+    allow:
+      - protocol: tcp
+        ports:
+          - 22
+    deny: []
+    log_config: null
+
+  - name: "allow-openvpn-{{ lookup('env','USER') | lower }}"
+    description: "Allow OpenVPN for {{ lookup('env','USER') | lower }}"
+    direction: INGRESS
+    priority: null
+    ranges:
+      - "{{ ipify_public_ip }}/32"
+    source_tags: null
+    source_service_accounts: null
+    target_tags:
+      - openvpn
+    target_service_accounts: null
+    allow:
+      - protocol: udp
+        ports:
+          - 1194
+    deny: []
+    log_config: null
+

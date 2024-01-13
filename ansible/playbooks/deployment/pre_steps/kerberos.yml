@@ -4,33 +4,35 @@
   hosts: deployment
   become: true
 
-  # roles:
-  #   - role: cloudera.cluster.prereqs.kerberos
-  #     when: krb5_kdc_host is defined or 'krb5_server' in groups
+  roles:
+    - role: cloudera.cluster.prereqs.kerberos
+      when: krb5_kdc_host is defined or 'krb5_server' in groups
+    - role: cloudera.cluster.infrastructure.krb5_conf
+      when: krb5_kdc_host is defined or 'krb5_server' in groups
 
-  post_tasks:
-    - name: Configure in krb5.conf
-      community.general.ini_file:
-        path: /etc/krb5.conf
-        section: '{{ item.section }}'
-        option: '{{ item.option }}'
-        value: '{{ item.value | default(omit) }}'
-        state: '{{ item.state }}'
-        mode: '0644'
-      loop:
-        - section: libdefaults
-          option: "  renew_lifetime"
-          value: 7d
-          state: present
+  # post_tasks:
+  #   - name: Configure in krb5.conf
+  #     community.general.ini_file:
+  #       path: /etc/krb5.conf
+  #       section: '{{ item.section }}'
+  #       option: '{{ item.option }}'
+  #       value: '{{ item.value | default(omit) }}'
+  #       state: '{{ item.state }}'
+  #       mode: '0644'
+  #     loop:
+  #       - section: libdefaults
+  #         option: "  renew_lifetime"
+  #         value: 7d
+  #         state: present
 
-        - section: libdefaults
-          option: "  default_ccache_name"
-          state: absent
+  #       - section: libdefaults
+  #         option: "  default_ccache_name"
+  #         state: absent
 
-        - section: libdefaults
-          option: "  permitted_enctypes"
-          state: absent
+  #       - section: libdefaults
+  #         option: "  permitted_enctypes"
+  #         state: absent
 
-        - section: libdefaults
-          option: "  default_tkt_enctypes"
-          state: absent
+  #       - section: libdefaults
+  #         option: "  default_tkt_enctypes"
+  #         state: absent

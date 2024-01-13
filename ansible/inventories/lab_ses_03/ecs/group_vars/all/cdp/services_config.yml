@@ -1,0 +1,143 @@
+---
+
+fresh_install_configs:
+  HIVE:
+    SERVICEWIDE:
+      hdfs_service: "hdfs"
+      ranger_plugin_urlauth_filesystem_schemes: "file:,wasb:,adl:"
+    HIVEMETASTORE:
+      hive_metastore_delegation_token_store: "org.apache.hadoop.hive.thrift.DBTokenStore"
+      hive_metastore_java_heapsize: 17179869184
+      hive_metastore_server_max_message_size: 1717986918
+  HIVE_ON_TEZ:
+    SERVICEWIDE:
+      hive_service_config_safety_valve: "<property><name>hive.server2.thrift.auth.max.retries</name><value>3</value><description>Introduced to overcome kerberos replay issue</description></property><property><name>hive.metastore.failure.retries</name><value>3</value><description>Number of retries upon failure of Thrift metastore calls</description></property><property><name>parquet.column.index.access</name><value>true</value><description>parquet file cloumn index access</description></property><property><name>hive.server2.tez.initialize.default.sessions</name><value>false</value></property><property><name>hive.server2.tez.queue.access.check</name><value>true</value></property><property><name>hive.server2.tez.sessions.custom.queue.allowed</name><value>true</value></property>"
+      ranger_plugin_urlauth_filesystem_schemes: "file:,wasb:,adl:"
+    HIVESERVER2:
+      hiveserver2_java_heapsize: 17179869184
+      hive_server2_transport_mode: "http"
+  KNOX:
+    KNOX_GATEWAY:
+      gateway_master_secret: "{{ KNOX_GATEWAY_master_secret }}"
+      gateway_heap_size: 1024
+  HUE:
+    SERVICEWIDE:
+      hive_service: "hive_on_tez"
+      hms_service: "hive"
+      hdfs_service: "hdfs"
+      auth_backend: "desktop.auth.backend.KnoxSpnegoDjangoBackend"
+      service_config_suppression_hue_load_balancer_count_validator: true
+  SPARK3_ON_YARN:
+    GATEWAY:
+      spark3-conf/spark-env.sh_client_config_safety_valve: "PYSPARK_PYTHON=python3.9"
+      spark_lineage_enabled: false
+  SPARK_ON_YARN:
+    SPARK_YARN_HISTORY_SERVER:
+      history_server_max_heapsize: 2147483648
+    GATEWAY:
+      spark_lineage_enabled: false
+  HDFS:
+    DATANODE:
+      datanode_java_heapsize: "4294967296"
+      dfs_data_dir_list: "/data/01/dfs/dn,/data/02/dfs/dn,/data/03/dfs/dn,/data/04/dfs/dn,/data/05/dfs/dn"
+      dfs_datanode_bind_wildcard: "true"
+      dfs_datanode_data_dir_perm: "700"
+      dfs_datanode_failed_volumes_tolerated: "1"
+      dfs_datanode_handler_count: "20"
+      process_auto_restart: "true"
+      dfs_datanode_port: 9866
+    FAILOVERCONTROLLER:
+      failover_controller_java_heapsize: "268435456"
+      process_auto_restart: "true"
+    GATEWAY:
+      hdfs_client_config_safety_valve: "<property><name>dfs.client.block.write.replace-datanode-on-failure.enable</name><value>true</value></property><property><name>dfs.client.block.write.replace-datanode-on-failure.policy</name><value>ALWAYS</value></property><property><name>dfs.client.block.write.replace-datanode-on-failure.best-effort</name><value>true</value></property>"
+    HTTPFS:
+      httpfs_java_heapsize: "268435456"
+      process_auto_restart: "true"
+    NAMENODE:
+      dfs_name_dir_list: "/data/01/dfs/nn,/data/02/dfs/nn"
+      namenode_bind_wildcard: "true"
+      namenode_java_heapsize: "8589934592"
+      process_auto_restart: "true"
+      autofailover_enabled: "true"
+      dfs_federation_namenode_nameservice: "cdpaas"
+      dfs_namenode_quorum_journal_name: "cdpaas"
+    JOURNALNODE:
+      dfs_journalnode_edits_dir: "/data/03/dfs/nn"
+      journalNode_java_heapsize: "2147483648"
+      journalnode_bind_wildcard: "true"
+      process_auto_restart: "true"
+    # SERVICEWIDE:
+    #   dfs_data_transfer_protection: privacy
+  YARN:
+    JOBHISTORY:
+      mr2_jobhistory_java_heapsize: "1073741824"
+      process_auto_restart: "true"
+      yarn_jobhistory_bind_wildcard: "true"
+    NODEMANAGER:
+      node_manager_java_heapsize: "4294967296"
+      process_auto_restart: "true"
+      yarn_nodemanager_local_dirs: "/data/01/yarn/nm,/data/02/yarn/nm,/data/03/yarn/nm,/data/04/yarn/nm,/data/05/yarn/nm"
+      yarn_nodemanager_resource_cpu_vcores: "96"
+      yarn_nodemanager_resource_memory_mb: "420080"
+    RESOURCEMANAGER:
+      process_auto_restart: "true"
+      resource_manager_java_heapsize: "4294967296"
+      yarn_rm_bind_wildcard: "true"
+      yarn_scheduler_increment_allocation_mb: "512"
+      yarn_scheduler_maximum_allocation_mb: "420080"
+      yarn_scheduler_maximum_allocation_vcores: "96"
+      yarn_scheduler_minimum_allocation_mb: "256"
+  RANGER:
+    SERVICEWIDE:
+      keyadmin_user_password: "{{ RANGER_keyadmin_user_password }}"
+      rangeradmin_user_password: "{{ RANGER_rangeradmin_user_password }}"
+      rangertagsync_user_password: "{{ RANGER_rangertagsync_user_password }}"
+      rangerusersync_user_password: "{{ RANGER_rangerusersync_user_password }}"
+    RANGER_USERSYNC:
+      ranger.usersync.ldap.binddn:               "{{ auth_providers.ad.ldap_bind_user_dn}}"
+      ranger_usersync_ldap_ldapbindpassword:     "{{ auth_providers.ad.ldap_bind_password}}"
+      ranger.usersync.ldap.user.searchbase:      "{{ auth_providers.ad.ldap_search_base.user }}"
+      ranger.usersync.group.searchbase:          "{{ auth_providers.ad.ldap_search_base.group }}"
+      ranger.usersync.ldap.user.objectclass:     "{{ auth_providers.ad.ldap_object_class.user }}"
+      ranger.usersync.group.objectclass:         "{{ auth_providers.ad.ldap_object_class.group }}"
+      ranger.usersync.ldap.user.nameattribute:   "{{ auth_providers.ad.ldap_attribute.user }}"
+      ranger.usersync.group.nameattribute:       "{{ auth_providers.ad.ldap_attribute.group }}"
+      ranger.usersync.group.memberattributename: "{{ auth_providers.ad.ldap_attribute.member }}"
+      ranger.usersync.ldap.url:                  "{{ auth_providers.ad.ldap_url }}"
+      ranger.usersync.group.based.role.assignment.rules: "&ROLE_SYS_ADMIN:g:supergroup"
+  KUDU:
+    KUDU_MASTER:
+      fs_wal_dir: "/data/01/kudu/WALs"
+      fs_data_dirs: "/data/02/kudu/data"
+    KUDU_TSERVER:
+      fs_wal_dir: "/data/01/kudu/WALs"
+      fs_data_dirs: "/data/02/kudu/data"
+  IMPALA:
+    SERVICEWIDE:
+      ranger_plugin_urlauth_filesystem_schemes: "file:,wasb:,adl:"
+    IMPALAD:
+      impalad_memory_limit: 137438953472
+      scratch_dirs: "/data/01/impala/impalad,/data/02/impala/impalad"
+  INFRA_SOLR:
+    SOLR_SERVER:
+      solr_java_heapsize: 8589934592
+      solr_java_direct_memory_size: 8589934592
+  OOZIE:
+    SERVICEWIDE:
+      oozie_load_balancer: "lb.{{ krb5_domain | default(krb5_realm | lower) }}"
+      oozie_load_balancer_http_port: "8001"
+      oozie_load_balancer_https_port: "8002"
+      oozie_use_ssl: "true"
+      mapreduce_yarn_service: yarn
+    OOZIE_SERVER:
+      oozie_config_safety_valve: "<property><name>oozie.service.CallbackService.base.url</name><value>https://lb.{{ krb5_domain | default(krb5_realm | lower) }}:8001/oozie/callback</value></property>"
+      oozie_plugins_list: "org.apache.oozie.service.ZKLocksService,org.apache.oozie.service.ZKXLogStreamingService,org.apache.oozie.service.ZKJobsConcurrencyService,org.apache.oozie.service.ZKUUIDService"
+  ZOOKEEPER:
+    SERVER:
+      dataDir: /data/01/zookeeper
+      dataLogDir: /data/01/zookeeper
+mgmt_configs:
+  SERVICEMONITOR:
+    firehose_heapsize: 2147483648
+    firehose_non_java_memory_bytes: 12884901888

@@ -1,0 +1,19 @@
+---
+
+cdp_services:
+  - HDFS
+  - HIVE
+  - HIVE_ON_TEZ
+  - HUE
+  - IMPALA
+  - INFRA_SOLR
+  - KNOX
+  - KUDU
+  - OOZIE
+  - QUEUEMANAGER
+  - RANGER
+  - SPARK_ON_YARN
+  - SPARK3_ON_YARN
+  - TEZ
+  - YARN
+  - ZOOKEEPER

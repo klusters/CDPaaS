@@ -1,0 +1,67 @@
+---
+
+- name: Deploy Externally signed certificates
+  hosts: deployment
+  become: true
+  vars:
+    local_certs_dir: certs
+    local_key_path: keys
+  tasks:
+    - name: Create Certificates directories
+      ansible.builtin.file:
+        path: "{{ __dir }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ tls_cert_path | dirname }}"
+        - "{{ tls_key_path | dirname }}"
+        - "{{ tls_key_password_file | dirname }}"
+        - "{{ base_dir_security_jks }}"
+        - "{{ base_dir_security_pki }}"
+        - "{{ tls_chain_path | dirname }}"
+      loop_control:
+        loop_var: __dir
+
+    - name: Push certificates and keys
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: '0644'
+      loop:
+        - src: "{{ local_certs_dir }}/{{ ansible_fqdn }}_certificate.pem"
+          dest: "{{ tls_cert_path }}"
+
+        - src: "{{ local_key_path }}/{{ ansible_fqdn }}_clear_key.pem"
+          dest: "{{ tls_key_path }}"
+
+    - name: Create Java keystore from cert and private_key
+      community.general.java_keystore:
+        name: '{{ ansible_fqdn }}'
+        certificate_path: '{{ tls_cert_path }}'
+        private_key_path: '{{ tls_key_path }}'
+        password: '{{ tls_keystore_password }}'
+        dest: '{{ tls_keystore_path }}'
+        owner: root
+        group: root
+        keystore_type: jks
+
+    - name: Create password file
+      ansible.builtin.copy:
+        content: '{{ tls_key_password }}'
+        dest: '{{ tls_key_password_file }}'
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Install Certificates
+      ansible.builtin.include_role:
+        name: cloudera.cluster.security.tls_install_certs
+
+    - name: Create host agnostic links
+      ansible.builtin.file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: hard
+      with_items:
+        - { src: "{{ tls_keystore_path }}", dest: "{{ tls_keystore_path_generic }}" }
+        - { src: "{{ tls_key_path }}", dest: "{{ tls_key_path_generic }}" }

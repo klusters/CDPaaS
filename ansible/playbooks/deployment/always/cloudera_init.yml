@@ -7,7 +7,9 @@
     - name: Assign host templates
       ansible.builtin.set_fact:
         host_template: "{{ host_role }}-{{ inventory_hostname | regex_replace('.*-(\\d{3})\\..*', '\\1') }}"
-      when: host_role in ['master', 'edge', 'utility']
+      when:
+        - host_role in ['master', 'edge', 'utility']
+        - auto_host_template | d(true)
 
     - name: Display host templates
       ansible.builtin.debug:

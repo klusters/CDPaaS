@@ -1,0 +1,106 @@
+---
+
+auto_host_template: false
+
+heavy_duty_host_templates:
+  NameNodes: # Master 1-2
+    HDFS:
+      - NAMENODE
+      - FAILOVERCONTROLLER
+  History:
+    HIVE:
+      - GATEWAY
+    QUEUEMANAGER:
+      - QUEUEMANAGER_STORE
+      - QUEUEMANAGER_WEBAPP
+    SPARK_ON_YARN:
+      - GATEWAY
+      - SPARK_YARN_HISTORY_SERVER
+    SPARK3_ON_YARN:
+      - GATEWAY
+      - SPARK3_YARN_HISTORY_SERVER
+    YARN:
+      - JOBHISTORY
+  ResourceManagers: # Master 4-5
+    YARN:
+      - RESOURCEMANAGER
+  JournalNodes_KuduMasters:  # Master 6-8
+    HDFS:
+      - JOURNALNODE
+    KUDU:
+      - KUDU_MASTER
+  ZooKeepers: # Master 9-11
+    ZOOKEEPER:
+      - SERVER
+  WorkersDN_ID: # Workers 1-17
+    HDFS:
+      - DATANODE
+    IMPALA:
+      - IMPALAD
+  WorkersDN_NM_4T: # Workers 18-24
+    HDFS:
+      - DATANODE
+    YARN:
+      - NODEMANAGER
+  WorkersDN_NM_1T: # Workers 25-29
+    HDFS:
+      - DATANODE
+    YARN:
+      - NODEMANAGER
+  WorkersDN_NM_2T: # Workers 30-33
+    HDFS:
+      - DATANODE
+    YARN:
+      - NODEMANAGER
+  KuduTS: # Workers 34-37
+    KUDU:
+      - KUDU_TSERVER
+  GatewayNodes: # Edges 1-3
+    HUE:
+      - HUE_SERVER
+      - KT_RENEWER
+    HDFS:
+      - GATEWAY
+    HIVE:
+      - GATEWAY
+    HIVE_ON_TEZ:
+      - GATEWAY
+    KNOX:
+      - KNOX_GATEWAY
+    SPARK_ON_YARN:
+      - GATEWAY
+    SPARK3_ON_YARN:
+      - GATEWAY
+    TEZ:
+      - GATEWAY
+    YARN:
+      - GATEWAY
+  HiveServers: # Edges 4-6
+    HIVE_ON_TEZ:
+      - GATEWAY
+      - HIVESERVER2
+    TEZ:
+      - GATEWAY
+  HiveMetaStores_Oozie: # Utility 1 & 10
+    HIVE:
+      - GATEWAY
+      - HIVEMETASTORE
+    OOZIE:
+      - OOZIE_SERVER
+    SPARK_ON_YARN:
+      - GATEWAY
+    SPARK3_ON_YARN:
+      - GATEWAY
+  ICS_ISS: # Utility 2
+    IMPALA:
+      - CATALOGSERVER
+      - STATESTORE
+  Rangers: # Utility 6-7
+    RANGER:
+      - RANGER_ADMIN
+      - RANGER_TAGSYNC
+      - RANGER_USERSYNC
+  InfraSolR: # Utility 8-9
+    INFRA_SOLR:
+      - GATEWAY
+      - SOLR_SERVER

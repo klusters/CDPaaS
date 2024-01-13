@@ -1,0 +1,11 @@
+---
+
+krb5_kdc_type: Active Directory
+krb5_enc_types: aes256-cts
+krb5_kdc_host: "DC01.{{ krb5_realm | lower }}"
+
+krb5_kdc_admin_user: "{{ cdp_manager_user }}@{{ krb5_realm }}"
+krb5_kdc_admin_password: "{{ cdp_manager_password }}"
+
+krb5_kdc_active_directory_prefix: cdp_prd-
+krb5_kdc_active_directory_suffix: "{{ ad_services_ou }}"
