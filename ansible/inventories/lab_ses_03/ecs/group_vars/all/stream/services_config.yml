@@ -1,0 +1,43 @@
+---
+
+streaming_configs:
+  CORE_SETTINGS:
+    SERVICEWIDE:
+      hadoop_rpc_protection: privacy
+  KAFKA:
+    KAFKA_CONNECT:
+      bootstrap.servers: "{{ groups.KafkaNodes  | map('regex_replace', '$', ':9093') | join(',') }}"
+    KAFKA_BROKER:
+      log.dirs: "/data/01/kafka/data,/data/02/kafka/data,/data/03/kafka/data,/data/04/kafka/data,/data/05/kafka/data,/data/06/kafka/data,/data/07/kafka/data"
+    SERVICEWIDE:
+        ranger_plugin_kafka_service_name: "cm_kafka_stream"
+  KNOX:
+    SERVICEWIDE:
+      kerberos.auth.enabled: true
+    KNOX_GATEWAY:
+      gateway_master_secret: "{{ KNOX_GATEWAY_master_secret }}"
+      gateway_heap_size: 1024
+  NIFI:
+    SERVICEWIDE:
+      kerberos.auth.enabled: true
+    NIFI_NODE:
+      nifi.security.identity.mapping.pattern.kerb: "^(.*?)@(.*?)$"
+      nifi.security.identity.mapping.value.kerb: "$1"
+      nifi.autogen.node.identities.dn.suffix: ", OU = Professional Services, O = EMEA, ST = Riyadh, C = SA"
+      nifi.security.identity.mapping.value.dn: $1
+      nifi.initial.admin.identity: nifi
+      java.arg.2: -Xms2048m
+      java.arg.3: -Xmx4096m
+  SCHEMAREGISTRY:
+    SERVICEWIDE:
+      kerberos.auth.enable: true
+  STREAMS_MESSAGING_MANAGER:
+    STREAMS_MESSAGING_MANAGER_SERVER:
+      kafka.connect.protocol: https
+      kafka.connect.hostports: "{{ groups.KafkaNodes  | map('regex_replace', '$', ':28085') | join(',') }}"
+  ZOOKEEPER:
+    SERVICEWIDE:
+      zookeeper_datadir_autocreate: true
+    SERVER:
+      dataDir: /data/01/zookeeper
+      dataLogDir: /data/01/zookeeper

@@ -37,3 +37,12 @@
               :;
           }
           readonly -f google_hostname_config
+
+    - name: Disable DNS overriding from NetworkManager
+      community.general.ini_file:
+        path: /etc/NetworkManager/NetworkManager.conf
+        section: main
+        option: dns
+        value: none
+        state: present
+        mode: '0644'

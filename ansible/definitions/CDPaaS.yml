@@ -1,14 +1,41 @@
 ---
 
 clusters:
-- name: "{{ cdp_cluster_name }}"
-  type: base
-  services: "{{ cdp_services }}"
-  databases: "{{ cdp_databases }}"
-  configs: "{{ fresh_install_configs }}"
-  repositories: "{{ cdp_parcels_repositories }}"
-  security: "{{ cdp_security_features }}"
-  host_templates: "{{ vars[cluster_duty_type + '_host_templates'] }}"
+  - name: "{{ cdp_cluster_name }}"
+    type: base
+    services: "{{ cdp_services }}"
+    databases: "{{ cdp_databases }}"
+    configs: "{{ fresh_install_configs }}"
+    repositories: "{{ cdp_parcels_repositories }}"
+    security: "{{ cdp_security_features }}"
+    host_templates: "{{ vars[cluster_duty_type + '_host_templates'] }}"
+    data_contexts:
+      - name: SDX
+        services: [HDFS, HIVE, RANGER]
+
+  - name: "{{ stream_cluster_name }}"
+    type: compute
+    services: "{{ stream_services }}"
+    databases: "{{ stream_databases }}"
+    security: "{{ cdp_security_features }}"
+    repositories: "{{ stream_parcels_repositories }}"
+    configs: "{{ streaming_configs }}"
+    host_templates: "{{ streaming_host_templates }}"
+    base_cluster:
+      name: "{{ cdp_cluster_name }}"
+      data_context: SDX
+
+  - name: "{{ ecs_cluster_name }}"
+    type: ecs
+    services: [DOCKER, ECS]
+    security: "{{ cdp_security_features }}"
+    application_domain: "{{ ecs_application_domain }}"
+    repositories: "{{ ecs_parcels_repositories }}"
+    configs: "{{ ecs_configs }}"
+    host_templates: "{{ ecs_host_templates }}"
+    controlplane_config: "{{ ecs_controlplane_config }}"
+    pvc_repository: "{{ ecs_pvc_repository }}"
+    datalake: "{{ cdp_cluster_name }}"
 
 mgmt:
   name: Cloudera Management Service

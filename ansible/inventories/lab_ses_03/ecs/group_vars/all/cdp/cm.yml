@@ -7,8 +7,6 @@ cloudera_manager_tls_validate_certs: no
 cloudera_manager_options: {}
 cloudera_manager_cmf_java_opts: "-Xmx4G -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
 
-cloudera_manager_csds: []
-
 cloudera_manager_license_file: "{{ ansible_inventory_sources[0] }}/../../../licenses/license.txt"
 
 cloudera_manager_version: 7.11.3
@@ -38,11 +36,17 @@ auth_providers:
       member: "member"
     type: LDAP
     ldap_url: "ldap://{{ krb5_realm | lower }}"
+  PAM:
+    type: PAM
 
 cloudera_manager_external_auth:
-  provider: ad
-  external_first: no
+  provider: PAM
   external_only: no
+  external_first: no
   role_mappings:
   - group: CM_Admins
     roles: [ROLE_ADMIN]
+
+cloudera_manager_csds:
+  - "{{ cdp_parcels_repo_base }}/cfm2/2.1.6.1001/redhat8/yum/tars/parcel/NIFI-1.23.1.2.1.6.1001-2.jar"
+  - "{{ cdp_parcels_repo_base }}/cfm2/2.1.6.1001/redhat8/yum/tars/parcel/NIFIREGISTRY-1.23.1.2.1.6.1001-2.jar"

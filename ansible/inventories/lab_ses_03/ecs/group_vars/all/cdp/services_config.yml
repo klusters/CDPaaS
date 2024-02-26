@@ -37,12 +37,30 @@ fresh_install_configs:
     GATEWAY:
       spark_lineage_enabled: false
   HDFS:
-    DATANODE:
+    DATANODE/4T:
       datanode_java_heapsize: "4294967296"
-      dfs_data_dir_list: "/data/01/dfs/dn,/data/02/dfs/dn,/data/03/dfs/dn,/data/04/dfs/dn,/data/05/dfs/dn"
+      dfs_data_dir_list: "/data/01/dfs/dn,/data/02/dfs/dn,/data/03/dfs/dn,/data/04/dfs/dn,/data/05/dfs/dn,/data/06/dfs/dn"
       dfs_datanode_bind_wildcard: "true"
       dfs_datanode_data_dir_perm: "700"
-      dfs_datanode_failed_volumes_tolerated: "1"
+      dfs_datanode_failed_volumes_tolerated: "3"
+      dfs_datanode_handler_count: "20"
+      process_auto_restart: "true"
+      dfs_datanode_port: 9866
+    DATANODE/2T:
+      datanode_java_heapsize: "4294967296"
+      dfs_data_dir_list: "/data/01/dfs/dn,/data/02/dfs/dn,/data/03/dfs/dn,/data/04/dfs/dn,/data/05/dfs/dn,/data/06/dfs/dn"
+      dfs_datanode_bind_wildcard: "true"
+      dfs_datanode_data_dir_perm: "700"
+      dfs_datanode_failed_volumes_tolerated: "4"
+      dfs_datanode_handler_count: "20"
+      process_auto_restart: "true"
+      dfs_datanode_port: 9866
+    DATANODE/1T:
+      datanode_java_heapsize: "4294967296"
+      dfs_data_dir_list: "/data/01/dfs/dn,/data/02/dfs/dn,/data/03/dfs/dn,/data/04/dfs/dn,/data/05/dfs/dn,/data/06/dfs/dn,/data/07/dfs/dn,/data/08/dfs/dn"
+      dfs_datanode_bind_wildcard: "true"
+      dfs_datanode_data_dir_perm: "700"
+      dfs_datanode_failed_volumes_tolerated: "3"
       dfs_datanode_handler_count: "20"
       process_auto_restart: "true"
       dfs_datanode_port: 9866
@@ -63,7 +81,7 @@ fresh_install_configs:
       dfs_federation_namenode_nameservice: "cdpaas"
       dfs_namenode_quorum_journal_name: "cdpaas"
     JOURNALNODE:
-      dfs_journalnode_edits_dir: "/data/03/dfs/nn"
+      dfs_journalnode_edits_dir: "/data/03/dfs/jnn"
       journalNode_java_heapsize: "2147483648"
       journalnode_bind_wildcard: "true"
       process_auto_restart: "true"
@@ -74,12 +92,24 @@ fresh_install_configs:
       mr2_jobhistory_java_heapsize: "1073741824"
       process_auto_restart: "true"
       yarn_jobhistory_bind_wildcard: "true"
-    NODEMANAGER:
+    NODEMANAGER/4T:
       node_manager_java_heapsize: "4294967296"
       process_auto_restart: "true"
-      yarn_nodemanager_local_dirs: "/data/01/yarn/nm,/data/02/yarn/nm,/data/03/yarn/nm,/data/04/yarn/nm,/data/05/yarn/nm"
-      yarn_nodemanager_resource_cpu_vcores: "96"
-      yarn_nodemanager_resource_memory_mb: "420080"
+      yarn_nodemanager_local_dirs: "/data/01/yarn/nm,/data/02/yarn/nm,/data/03/yarn/nm,/data/04/yarn/nm,/data/05/yarn/nm,/data/06/yarn/nm"
+      yarn_nodemanager_resource_cpu_vcores: 12
+      yarn_nodemanager_resource_memory_mb: 50000
+    NODEMANAGER/1T:
+      node_manager_java_heapsize: "4294967296"
+      process_auto_restart: "true"
+      yarn_nodemanager_local_dirs: "/data/01/yarn/nm,/data/02/yarn/nm,/data/03/yarn/nm,/data/04/yarn/nm,/data/05/yarn/nm,/data/06/yarn/nm,/data/07/yarn/nm,/data/08/yarn/nm"
+      yarn_nodemanager_resource_cpu_vcores: 12
+      yarn_nodemanager_resource_memory_mb: 50000
+    NODEMANAGER/2T:
+      node_manager_java_heapsize: "4294967296"
+      process_auto_restart: "true"
+      yarn_nodemanager_local_dirs: "/data/01/yarn/nm,/data/02/yarn/nm,/data/03/yarn/nm,/data/04/yarn/nm,/data/05/yarn/nm,/data/06/yarn/nm"
+      yarn_nodemanager_resource_cpu_vcores: 12
+      yarn_nodemanager_resource_memory_mb: 50000
     RESOURCEMANAGER:
       process_auto_restart: "true"
       resource_manager_java_heapsize: "4294967296"
@@ -118,7 +148,7 @@ fresh_install_configs:
       ranger_plugin_urlauth_filesystem_schemes: "file:,wasb:,adl:"
     IMPALAD:
       impalad_memory_limit: 137438953472
-      scratch_dirs: "/data/01/impala/impalad,/data/02/impala/impalad"
+      scratch_dirs: "/data/01/impala/impalad,/data/02/impala/impalad,/data/03/impala/impalad,/data/04/impala/impalad,/data/05/impala/impalad,/data/06/impala/impalad"
   INFRA_SOLR:
     SOLR_SERVER:
       solr_java_heapsize: 8589934592

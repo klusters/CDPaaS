@@ -1,20 +1,6 @@
 ---
 
-infra_type: local
-
-update_services: true
-
-definition_path: "{{ ansible_inventory_sources[0] }}/../../../definitions/"
-definition_file: CDPaaS.yml
-
-cdp_parcels_repository_base: "https://archive.cloudera.com/p"
-
-cdp_security_features:
-  kerberos: true
-  tls: true
-  hdfs_encryption: false
-
-cdp_cluster_name: CDPaaS
+stream_cluster_name: CDPaaS-Stream
 cluster_duty_type: heavy_duty
 
 parcel_version: 7.1.9
@@ -34,7 +20,6 @@ parcel_version_label: "{{ parcel_version | regex_replace('\\.', '-') }}"
 parcel_build_version: '{{ cdp_versions[parcel_version].Build }}'
 cdp_parcels_repo: "{{ cdp_parcels_repo_base }}/cdh7/{{ parcel_version }}.{{ cdp_versions[parcel_version].CHF | default(0) }}/parcels/"
 
-cdp_parcels_repositories:
+stream_parcels_repositories:
   - "{{ cdp_parcels_repo }}"
-  - "{{ cdp_parcels_repo_base }}/spark3/3.3.7190.3/parcels/"
   - "{{ cdp_parcels_repo_base }}/cfm2/2.1.6.1001/redhat8/yum/tars/parcel/"

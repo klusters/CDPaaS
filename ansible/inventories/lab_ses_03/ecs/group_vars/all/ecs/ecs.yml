@@ -1,0 +1,12 @@
+---
+
+ecs_cluster_name: CDPaaS-ECS
+
+cdp_parcels_repo_base: https://archive.cloudera.com/p
+
+ecs_application_domain: "ecs.{{ krb5_domain | default(krb5_realm | lower) }}"
+
+ecs_parcels_repositories:
+  - "{{ ecs_pvc_repository }}/parcels/"
+
+ecs_pvc_repository: "{{ cdp_parcels_repo_base }}/cdp-pvc-ds/1.5.2-h3"

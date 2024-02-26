@@ -1,0 +1,12 @@
+---
+
+ecs_host_templates:
+  ECS_Servers:
+    DOCKER:
+      - DOCKER_SERVER
+    ECS:
+      - ECS_SERVER
+
+  ECS_Agents:
+    ECS:
+      - ECS_AGENT

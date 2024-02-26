@@ -39,19 +39,19 @@ heavy_duty_host_templates:
       - IMPALAD
   WorkersDN_NM_4T: # Workers 18-24
     HDFS:
-      - DATANODE
+      - DATANODE/4T
     YARN:
-      - NODEMANAGER
+      - NODEMANAGER/4T
   WorkersDN_NM_1T: # Workers 25-29
     HDFS:
-      - DATANODE
+      - DATANODE/1T
     YARN:
-      - NODEMANAGER
+      - NODEMANAGER/1T
   WorkersDN_NM_2T: # Workers 30-33
     HDFS:
-      - DATANODE
+      - DATANODE/2T
     YARN:
-      - NODEMANAGER
+      - NODEMANAGER/2T
   KuduTS: # Workers 34-37
     KUDU:
       - KUDU_TSERVER

@@ -1,0 +1,39 @@
+---
+
+stream_databases:
+  SCHEMAREGISTRY:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: schema-registry
+    user:     "schema-registry"
+    password: "{{ hive_database_password }}"
+  STREAMS_MESSAGING_MANAGER:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: streams-messaging-manager
+    user:     "streams-messaging-manager"
+    password: "{{ hive_database_password }}"
+  HIVE:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: hive
+    user:     "hive-user"
+    password: "{{ hive_database_password }}"
+  HUE:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: hue
+    user:     "hue-user"
+    password: "{{ hue_database_password }}"
+  OOZIE:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: oozie
+    user:     "oozie-user"
+    password: "{{ oozie_database_password }}"
+  RANGER:
+    host: "{{ database_host }}"
+    port: "{{ database_port }}"
+    name: ranger_admin
+    user:     "ranger_admin-user"
+    password: "{{ ranger_admin_database_password }}"

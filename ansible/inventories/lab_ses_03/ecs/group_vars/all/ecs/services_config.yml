@@ -1,0 +1,42 @@
+---
+
+ecs_configs:
+  DOCKER:
+    SERVICEWIDE:
+      docker_images_destination_registry_user: registry-user
+      defaultDataPath: /data/docker
+  ECS:
+    SERVICEWIDE:
+      k8s_webui_secret_admin_token: ecs-k8s_webui_secret_admin_token
+      cp_prometheus_ingress_user: cloudera-manager
+      cp_prometheus_ingress_password: "{{ admin_password }}"
+      infra_prometheus_ingress_user: cloudera-manager
+      infra_prometheus_ingress_password: "{{ admin_password }}"
+      longhorn_replication: 3
+      target_redundancy: 3
+      lsoDataPath: /data/ecs/storage
+      defaultDataPath: /data/ecs/longhorn-storage
+      app_domain: "{{ ecs_application_domain }}"
+      docker: docker
+      nfs_over_provisioning: 800
+      # ssl_certificate: /opt/cloudera/security/pki/ecs.pem
+      # ssl_private_key: /opt/cloudera/security/pki/ecs.key
+
+ecs_controlplane_config:
+  ContainerInfo:
+    Mode: embedded
+    CopyDocker: true
+  Database:
+    Mode: embedded
+    EmbeddedDbStorage: 500
+
+  ExternalAuth:
+    Type: ACTIVE_DIRECTORY
+    Config:
+      ldap_url: "{{ auth_providers.ad.ldap_url }}"
+      ldap_bind_dn: "{{ auth_providers.ad.ldap_bind_user_dn }}"
+      ldap_bind_pw: "{{ auth_providers.ad.ldap_bind_password }}"
+      ldap_user_search_base: "{{ auth_providers.ad.ldap_search_base.user }}"
+      ldap_user_search_filter: "(memberOf=CN=cds_prod_users,{{ auth_providers.ad.ldap_search_base.group }})"
+      ldap_group_search_base: "{{ auth_providers.ad.ldap_search_base.group }}"
+      ldap_group_search_filter: "(objectClass={{ auth_providers.ad.ldap_object_class.group }})"

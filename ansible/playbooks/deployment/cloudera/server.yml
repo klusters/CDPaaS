@@ -36,5 +36,6 @@
         name: "{{ item }}"
       loop:
         - cloudera.cluster.cloudera_manager.admin_password.set
+        - cloudera.cluster.cloudera_manager.admin_password.check
         - cloudera.cluster.cloudera_manager.api_client
         - cloudera.cluster.cloudera_manager.kerberos
