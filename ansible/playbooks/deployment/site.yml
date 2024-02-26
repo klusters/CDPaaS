@@ -8,13 +8,13 @@
   ansible.builtin.import_playbook: pre_steps/os.yml
   tags: os
 
-- name: Set up FreeIPA clients
-  ansible.builtin.import_playbook: pre_steps/freeipa.yml
-  tags: freeipa
+# - name: Set up FreeIPA clients
+#   ansible.builtin.import_playbook: pre_steps/freeipa.yml
+#   tags: freeipa
 
-- name: Set up Certificates
-  ansible.builtin.import_playbook: pre_steps/certs.yml
-  tags: tls
+# - name: Set up Certificates
+#   ansible.builtin.import_playbook: pre_steps/certs.yml
+#   tags: tls
 
 - name: Set up Kerberos
   ansible.builtin.import_playbook: pre_steps/kerberos.yml
