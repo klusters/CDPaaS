@@ -8,10 +8,12 @@
   tasks:
     - name: Set up Cloudera Manager Server
       ansible.builtin.include_role:
-        name: "{{ item }}"
-      loop:
-        - cloudera.cluster.cloudera_manager.server
-        - cloudera.cluster.cloudera_manager.server_tls
+        name: cloudera.cluster.cloudera_manager.server
+
+    - name: Set up Cloudera Manager Server TLS
+      when: tls
+      ansible.builtin.include_role:
+        name: cloudera.cluster.cloudera_manager.server_tls
 
     - name: Set Cloudera Manager to HTTPS
       when: tls

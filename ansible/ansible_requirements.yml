@@ -3,7 +3,7 @@ collections:
 
   - name: https://github.com/anisf/cloudera.cluster.git
     type: git
-    version: n-ci-lab
+    version: devel
 
   - community.postgresql
   - community.crypto
@@ -32,6 +32,6 @@ roles :
 
   - name: robertdebock.openvpn
     src: git+https://github.com/klusters/ansible-role-openvpn.git
-    version: 1.0.0
+    version: 1.1.1
 
   - geerlingguy.postgresql

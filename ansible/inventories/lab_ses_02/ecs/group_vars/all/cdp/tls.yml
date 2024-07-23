@@ -3,6 +3,9 @@
 tls: "{{ cdp_security_features.tls }}"
 manual_tls_cert_distribution: "{{ cdp_security_features.tls }}"
 
+autotls_base_dir: /opt/cloudera/AutoTLS
+autotls_sudoer_user: autotlstmpuser
+
 local_temp_dir: '/tmp'
 
 base_dir_security: /opt/cloudera/security

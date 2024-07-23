@@ -28,14 +28,14 @@
   vars:
     cloudera_manager_api_user: admin
 
-  # pre_tasks:
-  #   - name: SetUp Cloudera Manager API Client (1/2)
-  #     ansible.builtin.include_role:
-  #       name: cloudera.cluster.cloudera_manager.admin_password.set
+  pre_tasks:
+    - name: SetUp Cloudera Manager API Client (1/2)
+      ansible.builtin.include_role:
+        name: cloudera.cluster.cloudera_manager.admin_password.set
 
-  #   - name: SetUp Cloudera Manager API Client (2/2)
-  #     ansible.builtin.include_role:
-  #       name: cloudera.cluster.cloudera_manager.api_client
+    - name: SetUp Cloudera Manager API Client (2/2)
+      ansible.builtin.include_role:
+        name: cloudera.cluster.cloudera_manager.api_client
 
   tasks:
     - name: Enable Auto-TLS

@@ -347,7 +347,7 @@ instance_roles:
       scopes: ["storage-ro"]
 
   ecs:
-    disk_size_gb: 150
+    disk_size_gb: 400
     additional_disks:
       - auto_delete: true
         boot: false
@@ -393,7 +393,7 @@ instance_roles:
     source_image: "rhel-8"
     source_image_project: "rhel-cloud"
 
-    machine_type: e2-custom-12-65536
+    machine_type: e2-standard-16
 
     subnetwork: priv-net
 

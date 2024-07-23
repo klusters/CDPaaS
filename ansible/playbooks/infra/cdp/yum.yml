@@ -1,7 +1,7 @@
 ---
 
 - name: Deploy yum repositories
-  hosts: deployment
+  hosts: deployment, build
   become: true
   tasks:
     - name: YUM repositories configuration

@@ -24,6 +24,9 @@ instances_use_default_sa: true
 service_accounts: "{{ hostvars['localhost']['service_accounts'] }}"
 instances_default_sa_email: "{{ service_accounts.resources | selectattr('displayName', 'match', '^Compute Engine default service account$') | map(attribute='email') | first }}"
 
+openvpn_protocol: tcp
+openvpn_port: 443
+
 instance_roles:
   openvpn:
     disk_size_gb: 50
